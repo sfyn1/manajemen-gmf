@@ -5,52 +5,83 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Models\Coach;
 use App\Models\User;
+use App\Models\StaffInvitation;
+use App\Mail\StaffInvitationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class StaffAccountController extends Controller
 {
+    /**
+     * Tampilkan halaman kelola akun staff & tabel monitoring undangan
+     */
     public function index()
     {
         $staff = User::whereIn('role', ['admin', 'coach'])->with('coach')->latest()->get();
-        return view('owner.staff.index', compact('staff'));
-    }
+        $invitations = StaffInvitation::latest()->get();
 
-    public function create()
-    {
-        return view('owner.staff.form', ['user' => null]);
-    }
-
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name'      => ['required', 'string', 'max:100'],
-            'email'     => ['required', 'email', 'unique:users,email'],
-            'password'  => ['required', 'string', 'min:8'],
-            'role'      => ['required', 'in:admin,coach'],
-            'phone'     => ['nullable', 'string', 'max:20'],
-            'is_active' => ['boolean'],
-        ]);
-
-        $user = User::create([
-            'name'      => $data['name'],
-            'email'     => $data['email'],
-            'password'  => Hash::make($data['password']),
-            'role'      => $data['role'],
-            'phone'     => $data['phone'] ?? null,
-            'is_active' => $request->boolean('is_active', true),
-        ]);
-
-        if ($data['role'] === 'coach') {
-            Coach::create([
-                'user_id'          => $user->id,
-                'phone'            => $data['phone'] ?? null,
-                'rate_per_session' => 0,
-                'is_active'        => true,
-            ]);
+        // Update status expired otomatis untuk tampilan
+        foreach ($invitations as $inv) {
+            if ($inv->status === 'pending' && Carbon::now()->gt($inv->expired_at)) {
+                $inv->update(['status' => 'expired']);
+            }
         }
 
-        return redirect()->route('owner.staff.index')->with('success', "Akun {$user->name} berhasil dibuat.");
+        return view('owner.staff.index', compact('staff', 'invitations'));
+    }
+
+    /**
+     * Owner mengirimkan undangan registrasi staff (Admin / Coach) via Email
+     */
+    public function invite(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'unique:users,email'],
+            'role'  => ['required', 'in:admin,coach'],
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar sebagai pengguna aktif di sistem.',
+            'role.required' => 'Pilih peran staff (Admin atau Coach).',
+        ]);
+
+        // Cek jika sudah ada undangan pending untuk email yang sama
+        $existingPending = StaffInvitation::where('email', $request->email)
+            ->where('status', 'pending')
+            ->where('expired_at', '>', Carbon::now())
+            ->first();
+
+        if ($existingPending) {
+            return redirect()->back()->with('error', "Undangan registrasi untuk email '{$request->email}' sudah pernah dikirim dan masih aktif hingga {$existingPending->expired_at->format('d M Y H:i')}.");
+        }
+
+        $token = Str::random(40);
+
+        $invitation = StaffInvitation::create([
+            'email'      => $request->email,
+            'role'       => $request->role,
+            'token'      => $token,
+            'status'     => 'pending',
+            'expired_at' => Carbon::now()->addHours(48),
+        ]);
+
+        try {
+            Mail::to($invitation->email)->send(new StaffInvitationMail($invitation));
+            $roleLabel = ucfirst($invitation->role);
+            return redirect()->route('owner.staff.index')->with('success', "Undangan registrasi staff ({$roleLabel}) berhasil dikirim ke email {$invitation->email}.");
+        } catch (\Exception $e) {
+            return redirect()->route('owner.staff.index')->with('success', "Token undangan staff ({$invitation->role}) berhasil dibuat. (Catatan: Pengiriman email dinonaktifkan di local environment. Link registrasi: " . route('register.staff', ['token' => $token]) . ")");
+        }
+    }
+
+    /**
+     * Membatalkan / menghapus token undangan
+     */
+    public function cancelInvitation(StaffInvitation $invitation)
+    {
+        $invitation->delete();
+        return redirect()->back()->with('success', 'Undangan registrasi staff berhasil dibatalkan.');
     }
 
     public function edit(User $user)

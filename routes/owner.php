@@ -20,6 +20,8 @@ Route::prefix('reports')->name('reports.')->group(function () {
 // ── Staff Account Management ──────────────────────────────────────────────────
 Route::prefix('staff')->name('staff.')->group(function () {
     Route::get('/', [Owner\StaffAccountController::class, 'index'])->name('index');
+    Route::post('/invite', [Owner\StaffAccountController::class, 'invite'])->name('invite');
+    Route::delete('/invitations/{invitation}', [Owner\StaffAccountController::class, 'cancelInvitation'])->name('invitations.cancel');
     Route::get('/create', [Owner\StaffAccountController::class, 'create'])->name('create');
     Route::post('/', [Owner\StaffAccountController::class, 'store'])->name('store');
     Route::get('/{user}/edit', [Owner\StaffAccountController::class, 'edit'])->name('edit');

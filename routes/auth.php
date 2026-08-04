@@ -26,6 +26,12 @@ Route::middleware('guest')->group(function () {
         ->name('password.reset');
     Route::post('/forgot-password/reset', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'reset'])
         ->name('password.reset.post');
+
+    // ── Registrasi Staff via Invite Token ──────────────────────────────────────
+    Route::get('/register/staff', [\App\Http\Controllers\Auth\StaffRegistrationController::class, 'showForm'])
+        ->name('register.staff');
+    Route::post('/register/staff', [\App\Http\Controllers\Auth\StaffRegistrationController::class, 'submitForm'])
+        ->name('register.staff.post');
 });
 
 Route::middleware('auth')->group(function () {

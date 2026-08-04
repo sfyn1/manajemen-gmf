@@ -320,9 +320,9 @@
     "semantic_hash": "6908dd986e83b611a6a363d45b650dcb"
   },
   "app/Http/Controllers/Owner/StaffAccountController.php": {
-    "mtime": 1785729107.346053,
-    "ast_hash": "8b5d5535e74f8c9544e35a399794d748",
-    "semantic_hash": ""
+    "mtime": 1784964527.863948,
+    "ast_hash": "2e923858065597afedb8e092b81b93e3",
+    "semantic_hash": "2e923858065597afedb8e092b81b93e3"
   },
   "app/Http/Middleware/CheckMemberActive.php": {
     "mtime": 1784799323.5262246,
@@ -650,9 +650,9 @@
     "semantic_hash": "0a1318f16e653dece8d34d69fa53b216"
   },
   "database/seeders/UserSeeder.php": {
-    "mtime": 1785730777.3661437,
-    "ast_hash": "2a2761cc82a99e874d92dc0186c188de",
-    "semantic_hash": ""
+    "mtime": 1784875421.751274,
+    "ast_hash": "b1e9d61a52f991eb4b8a65d953de55cb",
+    "semantic_hash": "b1e9d61a52f991eb4b8a65d953de55cb"
   },
   "package.json": {
     "mtime": 1784693723.9319737,
@@ -865,7 +865,7 @@
     "semantic_hash": "a04934e889c31819db1b3cc02b1f4035"
   },
   "resources/views/member/dashboard.blade.php": {
-    "mtime": 1785721117.896362,
+    "mtime": 1784969402.2489927,
     "ast_hash": "3f235707e6f38b4473ff9a919c9c35d4",
     "semantic_hash": "3f235707e6f38b4473ff9a919c9c35d4"
   },
@@ -925,9 +925,9 @@
     "semantic_hash": "9a23f312187a39d54f62ee5890667104"
   },
   "resources/views/owner/staff/index.blade.php": {
-    "mtime": 1785731568.965446,
-    "ast_hash": "67e6bc88b4baf0ac0f250f0b795612db",
-    "semantic_hash": ""
+    "mtime": 1784964898.7377958,
+    "ast_hash": "e2e0633c2bda1c374376ae193873760f",
+    "semantic_hash": "e2e0633c2bda1c374376ae193873760f"
   },
   "resources/views/welcome.blade.php": {
     "mtime": 1785388964.826809,
@@ -940,9 +940,9 @@
     "semantic_hash": "56389a1e1a8f1171d9a3cbcb66b7b939"
   },
   "routes/auth.php": {
-    "mtime": 1785729149.5670187,
-    "ast_hash": "2e5cb9d86c7d174791a2b2e2c9038a5a",
-    "semantic_hash": ""
+    "mtime": 1784693389.3227866,
+    "ast_hash": "67e0223dbe329389834935d9ed06cccc",
+    "semantic_hash": "67e0223dbe329389834935d9ed06cccc"
   },
   "routes/channels.php": {
     "mtime": 1784693525.5170112,
@@ -965,9 +965,9 @@
     "semantic_hash": "a806fab880ce9c64c69ee8841495aca5"
   },
   "routes/owner.php": {
-    "mtime": 1785729159.3339312,
-    "ast_hash": "7b10756aea4550f670acc132880c2e62",
-    "semantic_hash": ""
+    "mtime": 1784693430.8594956,
+    "ast_hash": "e521b71d43847319198c01598a424c74",
+    "semantic_hash": "e521b71d43847319198c01598a424c74"
   },
   "routes/web.php": {
     "mtime": 1785388926.2039876,
@@ -1320,9 +1320,9 @@
     "semantic_hash": "b6216d61c03e6ce0c9aea6ca7808f7ca"
   },
   "spesifikasi-sim-fitness-center.md": {
-    "mtime": 1785731421.3286743,
-    "ast_hash": "11b89f1092961f58da172f4f78fab942",
-    "semantic_hash": ""
+    "mtime": 1784692479.722939,
+    "ast_hash": "17cfeb520ba32e6111fe7d1527423eb4",
+    "semantic_hash": "17cfeb520ba32e6111fe7d1527423eb4"
   },
   "public/images/gmf.png": {
     "mtime": 1779699092.2995722,
@@ -1353,40 +1353,5 @@
     "mtime": 1770614071.3370755,
     "ast_hash": "ae4d610703daeeee82d92b4899d2ca02",
     "semantic_hash": "ae4d610703daeeee82d92b4899d2ca02"
-  },
-  "app/Http/Controllers/Auth/StaffRegistrationController.php": {
-    "mtime": 1785729119.1978562,
-    "ast_hash": "7faa10b3b43ee605a67263bfed7ff9f9",
-    "semantic_hash": ""
-  },
-  "app/Mail/StaffInvitationMail.php": {
-    "mtime": 1785729080.694901,
-    "ast_hash": "ac534b21604d9509270d1b535d3c9648",
-    "semantic_hash": ""
-  },
-  "app/Models/StaffInvitation.php": {
-    "mtime": 1785729075.162946,
-    "ast_hash": "3f04ab8bf07fd941ab6765af2b5f2497",
-    "semantic_hash": ""
-  },
-  "database/migrations/2026_08_03_000019_create_staff_invitations_table.php": {
-    "mtime": 1785729048.8151338,
-    "ast_hash": "94a627f716c17c394db9bf27c0cde5ba",
-    "semantic_hash": ""
-  },
-  "resources/views/auth/register-staff-invalid.blade.php": {
-    "mtime": 1785729165.0016184,
-    "ast_hash": "a89790f1af9a143875991a2233aa549e",
-    "semantic_hash": ""
-  },
-  "resources/views/auth/register-staff.blade.php": {
-    "mtime": 1785729171.0166636,
-    "ast_hash": "fdf06152dfe017841da30bc1e63ef1c5",
-    "semantic_hash": ""
-  },
-  "resources/views/emails/staff-invitation.blade.php": {
-    "mtime": 1785729085.9916718,
-    "ast_hash": "add8cb1aa173b872ebdb89a2496b4687",
-    "semantic_hash": ""
   }
 }

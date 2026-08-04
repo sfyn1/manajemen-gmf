@@ -15,8 +15,15 @@ Model bisnis: fitness center dengan membership bulanan (reguler & pelajar) dan h
 - Login menggunakan **email + password**.
 - Semua aktor bisa: login, logout, lupa password.
 - Lupa password memakai **OTP dikirim ke email**.
-- Akun **Admin, Coach, dan Owner** dibuat oleh **Owner** (fungsi super admin) — bukan self-register.
-- Akun **Member** dibuat melalui **self-registration** (lihat alur di bagian 4.2).
+- Akun **Owner** dibuat manual di awal (seed/inisialisasi sistem), tidak ada mekanisme registrasi untuk role ini.
+- Akun **Admin & Coach** dibuat lewat **invite-token self-register**:
+  1. **Owner** input email calon staff + pilih role (Admin/Coach) di halaman **Manajemen Akun Staff** (fungsi super admin, tetap di modul Owner).
+  2. Sistem generate **token unik** (random string) + waktu kadaluarsa (misal 48 jam), status token: `belum dipakai` / `sudah dipakai` / `kadaluarsa`.
+  3. Sistem kirim email otomatis berisi link registrasi bertoken ke email tersebut, contoh: `/register/staff?token=xxx`.
+  4. Sistem validasi token saat link dibuka: kalau tidak ada/salah/kadaluarsa/sudah dipakai → akses ditolak. Kalau valid → tampilkan form isi data diri (email terkunci sesuai token, tidak bisa diubah).
+  5. Setelah submit, akun langsung **aktif** dengan role sesuai yang ditentukan Owner di langkah 1, token ditandai `sudah dipakai` (tidak bisa dipakai ulang).
+  - Ini mencegah orang yang bukan staff asli ikut mendaftar, karena hanya pemilik email yang diundang Owner yang punya akses ke form registrasi.
+- Akun **Member** dibuat melalui **self-registration terbuka** (lihat alur di bagian 3.5) — beda dengan Admin/Coach karena member memang publik/calon pelanggan, bukan staff internal.
 - Member **tidak bisa login** sebelum akunnya di-approve oleh Admin (status `pending` → `active`).
 
 ---
@@ -62,6 +69,14 @@ Alur:
 7. Sistem mengirim **email otomatis** (registrasi berhasil/gagal) ke calon member.
 8. Kalau **approved** → status jadi `active`, member baru bisa login dan mendapat QR.
 9. Kalau **rejected** → member bisa mendaftar ulang; sistem **tidak boleh membuat data duplikat**.
+
+**Kebijakan setelah ditolak (rejected):**
+- Email penolakan otomatis mencantumkan alasan penolakan, **dan dua opsi penyelesaian**:
+  - **(a) Daftar Ulang** — kalau member bisa memperbaiki sendiri (dokumen buram, data salah), submit ulang secara online. Pembayaran yang sudah ada **tetap dipakai**, tidak perlu bayar lagi (mengikuti rule update-record-lama di tabel anti-duplikasi).
+  - **(b) Datang langsung ke gym** — kalau member ingin diselesaikan tatap muka, termasuk kalau tidak ingin melanjutkan dan minta uangnya kembali.
+- **Refund dilakukan manual secara tatap muka** di gym (cash atau transfer manual saat itu juga oleh admin) — **tidak ada fitur refund online**, tidak perlu menyimpan nomor rekening member di sistem.
+- Setelah refund diberikan secara langsung, admin masuk ke halaman **Manajemen Membership** dan menandai status registrasi tersebut menjadi **"Sudah Direfund"** (toggle + catatan opsional), supaya tercatat untuk kebutuhan laporan.
+- Dampak ke laporan: nominal yang sudah direfund **mengurangi angka pemasukan** pada bulan terjadinya di dashboard Owner, supaya total pemasukan yang ditampilkan adalah angka bersih (net), bukan kotor.
 
 **Aturan anti-duplikasi (berdasarkan NIK sebagai unique identifier):**
 | Kondisi NIK di sistem | Aksi saat submit registrasi baru |
@@ -128,7 +143,7 @@ Dilengkapi **notifikasi real-time dengan suara** setiap ada item baru yang masuk
 
 1. **Dashboard Analitik** — total **pemasukan** (bukan pengeluaran/P&L) dalam rentang waktu, dengan **breakdown per sumber**: membership, kelas, penjualan produk. Mendukung **custom date range** (bukan cuma per bulan).
 2. **Unduh Laporan** — laporan pemasukan dengan rentang tanggal custom.
-3. **Manajemen Akun Staff** — kelola akun Admin, Coach, dan Owner lain (fungsi super admin).
+3. **Manajemen Akun Staff** — kirim undangan (invite-token) untuk akun Admin & Coach baru, lihat status undangan (belum dipakai/sudah dipakai/kadaluarsa), serta kelola (nonaktifkan) akun staff yang sudah ada. Fungsi super admin, lihat detail alur di bagian 2.
 
 > **Catatan Batasan Masalah**: dashboard Owner hanya mencakup pemasukan, **tidak mencakup pencatatan pengeluaran operasional** (sewa, listrik, maintenance, dll) di luar payroll. Ini adalah batasan sistem yang disengaja, bukan bug — perlu dicantumkan eksplisit di bab Batasan Masalah skripsi.
 
@@ -219,7 +234,8 @@ Namespace mengikuti folder, contoh: `App\Http\Controllers\Admin\MembershipContro
 ```
 app/Models/
 ├── User.php                  # akun login (semua role), field: role, email, password
-├── Member.php                # profil member + status (pending/active/rejected)
+├── StaffInvitation.php       # token undangan Admin/Coach: email, role, token, status (belum dipakai/sudah dipakai/kadaluarsa), expired_at
+├── Member.php                # profil member + status (pending/active/rejected) + refund_status (null/refunded) untuk registrasi yang ditolak
 ├── MembershipPackage.php     # paket: reguler, harian, pelajar
 ├── MembershipDocument.php    # dokumen upload (KTP/KTM) + bukti transfer
 ├── Coach.php
@@ -316,8 +332,10 @@ database/seeders/                                          # data dummy per role
 - Daily pass: tidak bisa booking kelas, QR expired 24 jam, tetap wajib self-register (data diri + KTP).
 - Paket Pelajar: wajib upload KTM/kartu pelajar. Paket Reguler & Harian: wajib upload KTP.
 - Registrasi member: validasi NIK unik, anti-duplikasi sesuai tabel di bagian 3.5.
+- Registrasi ditolak: member bisa daftar ulang online (pakai pembayaran lama) atau datang langsung ke gym untuk refund manual tatap muka; admin tandai "Sudah Direfund" di sistem, nominal refund mengurangi angka pemasukan Owner di bulan itu.
 - Profil member terkunci total setelah aktif.
 - Verifikasi kehadiran coach: 1 jam window, resubmit jika ditolak, auto-gagal (tidak dibayar) jika tidak submit sama sekali.
 - Payroll: per sesi (rate ditentukan admin), akumulasi bulanan dari sesi yang approved.
 - Approval member baru + approval kehadiran coach digabung dalam satu Approval Center dengan notifikasi real-time bersuara.
 - Owner: dashboard income-only (breakdown per sumber), custom date range, plus kelola akun staff (fungsi super admin).
+- Admin & Coach: akun dibuat via invite-token dari Owner (email + link registrasi unik terbatas waktu), bukan self-register bebas — mencegah orang yang bukan staff asli ikut mendaftar. 
