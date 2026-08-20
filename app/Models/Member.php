@@ -27,6 +27,14 @@ class Member extends Model
         'membership_end_date',
         'qr_token',
         'qr_expires_at',
+        'order_id',
+        'snap_token',
+        'payment_type',
+        'payment_status',
+        'refund_amount',
+        'refund_reason',
+        'refunded_at',
+        'refund_status',
     ];
 
     protected $casts = [
@@ -34,6 +42,8 @@ class Member extends Model
         'membership_start_date' => 'date',
         'membership_end_date'   => 'date',
         'qr_expires_at'         => 'datetime',
+        'refunded_at'           => 'datetime',
+        'refund_amount'         => 'decimal:2',
     ];
 
     // ── Status Constants ──────────────────────────────────────────────────────

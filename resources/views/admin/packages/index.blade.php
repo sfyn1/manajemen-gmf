@@ -72,7 +72,9 @@
             <h3 class="font-bold text-slate-900 font-display text-base mb-5" x-text="editPkg ? 'Edit Paket Membership' : 'Tambah Paket Baru'"></h3>
             <form :action="editPkg ? `/admin/packages/${editPkg}` : '{{ route('admin.packages.store') }}'" method="POST" class="space-y-4">
                 @csrf
-                <span x-show="editPkg" style="display:none;"><input type="hidden" name="_method" value="PUT"></span>
+                <template x-if="editPkg">
+                    <input type="hidden" name="_method" value="PUT">
+                </template>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">

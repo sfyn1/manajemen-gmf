@@ -7,11 +7,26 @@
 @section('content')
 
 {{-- Stat Cards --}}
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    {{-- Card 1: Rate Komisi / Sesi (Transparansi Pelatih) --}}
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all">
+        <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Rate Komisi / Sesi</p>
+            <p class="text-2xl sm:text-3xl font-extrabold font-display text-[#f05a2a]">
+                Rp {{ number_format($coach->rate_per_session ?? 0, 0, ',', '.') }}
+            </p>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 font-medium flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-[#f05a2a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Tarif komisi per sesi</span>
+        </p>
+    </div>
+
+    {{-- Card 2: Verifikasi Pending --}}
     <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between">
         <div>
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Verifikasi Pending</p>
-            <p class="text-3xl sm:text-4xl font-extrabold font-display {{ $pendingVerifications->count() > 0 ? 'text-[#f05a2a]' : 'text-slate-900' }}">
+            <p class="text-2xl sm:text-3xl font-extrabold font-display {{ $pendingVerifications->count() > 0 ? 'text-[#f05a2a]' : 'text-slate-900' }}">
                 {{ $pendingVerifications->count() }}
             </p>
         </div>
@@ -20,15 +35,21 @@
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <span>Membutuhkan verifikasi Anda</span>
         </p>
+        @else
+        <p class="text-xs text-slate-400 mt-3 font-medium">Semua presensi terverifikasi</p>
         @endif
     </div>
 
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6">
-        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Sesi Terverifikasi Bulan Ini</p>
-        <p class="text-3xl sm:text-4xl font-extrabold font-display text-emerald-600">{{ $thisMonthApproved->count() }}</p>
-        <p class="text-xs text-slate-400 mt-2 font-medium">Sesi mengajar disetujui admin</p>
+    {{-- Card 3: Sesi Terverifikasi Bulan Ini --}}
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between">
+        <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Sesi Terverifikasi Bulan Ini</p>
+            <p class="text-2xl sm:text-3xl font-extrabold font-display text-emerald-600">{{ $thisMonthApproved->count() }}</p>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 font-medium">Disetujui admin bulan ini</p>
     </div>
 
+    {{-- Card 4: Estimasi Komisi Bulan Ini --}}
     <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all">
         <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Estimasi Komisi Bulan Ini</p>
@@ -38,7 +59,7 @@
         </div>
         <p class="text-xs text-emerald-600 font-semibold mt-3 flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>{{ ($payrollStatus ?? 'pending') === 'paid' ? 'Sudah Dibayarkan' : 'Pending Pembayaran Payroll' }}</span>
+            <span>{{ ($payrollStatus ?? 'pending') === 'paid' ? 'Sudah Dibayarkan' : 'Pending Payroll' }}</span>
         </p>
     </div>
 </div>

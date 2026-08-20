@@ -21,8 +21,20 @@ class ApprovalCenterController extends Controller
     {
         AttendanceVerification::syncFromBookings();
 
-        $pendingMembers        = Member::pending()->with(['package', 'latestDocument'])->latest()->get();
-        $pendingRenewals       = MembershipRenewal::pending()->with(['member', 'package'])->latest()->get();
+        $pendingMembers        = Member::pending()
+            ->whereNotNull('order_id')
+            ->where('payment_status', 'settlement')
+            ->with(['package', 'latestDocument'])
+            ->latest()
+            ->get();
+        $pendingRenewals       = MembershipRenewal::pending()
+            ->where(function ($q) {
+                $q->where('payment_method', 'cash')
+                  ->orWhere('payment_status', 'settlement');
+            })
+            ->with(['member', 'package'])
+            ->latest()
+            ->get();
         $pendingVerifications  = AttendanceVerification::pending()
             ->whereNotNull('submitted_at')
             ->with(['coach.user', 'schedule.classType'])
@@ -86,18 +98,36 @@ class ApprovalCenterController extends Controller
 
         // Kirim email persetujuan
         if ($member->email) {
-            Mail::to($member->email)->queue(new MemberApprovedMail($member, $tempPassword));
+            Mail::to($member->email)->send(new MemberApprovedMail($member, $tempPassword));
         }
 
         return redirect()->route('admin.approval.index')
             ->with('success', "Member {$member->full_name} berhasil disetujui. Email notifikasi dikirim.");
     }
 
-    public function rejectMember(Member $member, Request $request)
+    public function rejectMember(Member $member, Request $request, \App\Services\MidtransService $midtransService)
     {
         $request->validate([
             'rejection_reason' => ['required', 'string', 'max:500'],
         ]);
+
+        $refundMsg = '';
+        if ($member->order_id) {
+            $amount = $member->latestDocument ? ($member->latestDocument->payment_amount ?? 0) : ($member->package ? $member->package->price : 0);
+            if ($amount > 0) {
+                $midtransService->refundTransaction($member->order_id, $amount, $request->rejection_reason);
+
+                $member->update([
+                    'payment_status' => 'refunded',
+                    'refund_status'  => 'refunded',
+                    'refund_amount'  => $amount,
+                    'refund_reason'  => $request->rejection_reason,
+                    'refunded_at'    => now(),
+                ]);
+
+                $refundMsg = " & Refund otomatis sebesar Rp " . number_format($amount, 0, ',', '.') . " berhasil diproses via Midtrans API";
+            }
+        }
 
         $member->update([
             'status'           => Member::STATUS_REJECTED,
@@ -109,7 +139,7 @@ class ApprovalCenterController extends Controller
         }
 
         return redirect()->route('admin.approval.index')
-            ->with('success', "Pendaftaran {$member->full_name} ditolak. Member dapat mendaftar ulang.");
+            ->with('success', "Pendaftaran {$member->full_name} ditolak{$refundMsg}. Member dapat mendaftar ulang.");
     }
 
     public function approveVerification(AttendanceVerification $verification)
@@ -174,12 +204,27 @@ class ApprovalCenterController extends Controller
             ->with('success', "Perpanjangan membership {$member->full_name} berhasil disetujui hingga " . date('d M Y', strtotime($newEndDate)) . ".");
     }
 
-    public function rejectRenewal(MembershipRenewal $renewal, Request $request)
+    public function rejectRenewal(MembershipRenewal $renewal, Request $request, \App\Services\MidtransService $midtransService)
     {
         $request->validate([
             'rejection_reason' => ['required', 'string', 'max:500'],
             'refund_notes'     => ['nullable', 'string', 'max:500'],
         ]);
+
+        $refundMsg = '';
+        if ($renewal->order_id && $renewal->payment_amount > 0) {
+            $amount = $renewal->payment_amount;
+            $midtransService->refundTransaction($renewal->order_id, $amount, $request->rejection_reason);
+
+            $renewal->update([
+                'payment_status' => 'refunded',
+                'refund_amount'  => $amount,
+                'refund_reason'  => $request->rejection_reason,
+                'refunded_at'    => now(),
+            ]);
+
+            $refundMsg = " & Refund otomatis sebesar Rp " . number_format($amount, 0, ',', '.') . " berhasil diproses via Midtrans API";
+        }
 
         $renewal->update([
             'status'           => 'rejected',
@@ -190,6 +235,6 @@ class ApprovalCenterController extends Controller
         ]);
 
         return redirect()->route('admin.approval.index')
-            ->with('success', "Pengajuan perpanjangan membership {$renewal->member->full_name} telah ditolak.");
+            ->with('success', "Pengajuan perpanjangan membership {$renewal->member->full_name} ditolak{$refundMsg}.");
     }
 }

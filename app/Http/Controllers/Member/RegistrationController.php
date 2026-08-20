@@ -139,18 +139,56 @@ class RegistrationController extends Controller
         return redirect()->route('register.step4');
     }
 
-    // ── Step 4: Upload Bukti Pembayaran ───────────────────────────────────────
+    // ── Step 4: Pembayaran (Midtrans Snap & Upload Bukti) ────────────────────
 
-    public function showStep4()
+    public function showStep4(\App\Services\MidtransService $midtransService)
     {
         if (! session('reg_step3')) {
             return redirect()->route('register.step3');
         }
 
+        $step1     = session('reg_step1');
         $packageId = session('reg_step2.membership_package_id');
         $package   = MembershipPackage::findOrFail($packageId);
 
-        return view('member.register.step4', compact('package'));
+        $orderId = session('reg_order_id', 'GMF-REG-' . date('Ymd') . '-' . rand(1000, 9999));
+        session(['reg_order_id' => $orderId]);
+
+        $snapToken = session('reg_snap_token');
+
+        if (! $snapToken || ! is_string($snapToken)) {
+            try {
+                $params = [
+                    'transaction_details' => [
+                        'order_id'     => $orderId,
+                        'gross_amount' => (int) $package->price,
+                    ],
+                    'customer_details' => [
+                        'first_name' => $step1['full_name'] ?? 'Member',
+                        'email'      => $step1['email'] ?? 'member@example.com',
+                        'phone'      => $step1['phone'] ?? '08123456789',
+                    ],
+                    'item_details' => [
+                        [
+                            'id'       => 'PKG-' . $package->id,
+                            'price'    => (int) $package->price,
+                            'quantity' => 1,
+                            'name'     => substr('Paket ' . $package->name, 0, 50),
+                        ]
+                    ]
+                ];
+                $snapToken = $midtransService->createSnapToken($params);
+                if ($snapToken && is_string($snapToken)) {
+                    session(['reg_snap_token' => $snapToken]);
+                }
+            } catch (\Throwable $e) {
+                \Log::error('Midtrans Snap Token Exception: ' . $e->getMessage());
+                session()->forget('reg_snap_token');
+                $snapToken = null;
+            }
+        }
+
+        return view('member.register.step4', compact('package', 'snapToken', 'orderId'));
     }
 
     public function postStep4(Request $request)
@@ -160,33 +198,41 @@ class RegistrationController extends Controller
         }
 
         $request->validate([
-            'payment_proof'  => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
             'payment_amount' => ['required', 'numeric', 'min:0'],
         ]);
 
-        $paymentPath = $request->file('payment_proof')
-            ->store('documents/payments', 'public');
-
-        // Kumpulkan semua data dari session
-        $step1 = session('reg_step1');
-        $step2 = session('reg_step2');
-        $step3 = session('reg_step3');
+        // Kumpulkan semua data dari session (100% Midtrans Payment Gateway)
+        $step1     = session('reg_step1');
+        $step2     = session('reg_step2');
+        $step3     = session('reg_step3');
+        $orderId   = session('reg_order_id');
+        $snapToken = session('reg_snap_token');
+        $payType   = 'midtrans_snap';
+        $payStatus = $request->input('payment_status', 'settlement');
 
         $nik      = $step1['nik'];
         $existing = Member::where('nik', $nik)->first();
 
         $memberData = array_merge($step1, [
             'membership_package_id' => $step2['membership_package_id'],
-            'profile_photo_path'     => $step3['profile_photo_path'] ?? null,
+            'profile_photo_path'    => $step3['profile_photo_path'] ?? null,
             'status'                => Member::STATUS_PENDING,
+            'order_id'              => $orderId,
+            'snap_token'            => $snapToken,
+            'payment_type'          => $payType,
+            'payment_status'        => $payStatus,
             'rejection_reason'      => null,
         ]);
 
         if ($existing && $existing->status === Member::STATUS_REJECTED) {
             // Hapus dokumen lama jika ada
             if ($existing->latestDocument) {
-                Storage::disk('public')->delete($existing->latestDocument->identity_document_path);
-                Storage::disk('public')->delete($existing->latestDocument->payment_proof_path);
+                if ($existing->latestDocument->identity_document_path) {
+                    Storage::disk('public')->delete($existing->latestDocument->identity_document_path);
+                }
+                if ($existing->latestDocument->payment_proof_path) {
+                    Storage::disk('public')->delete($existing->latestDocument->payment_proof_path);
+                }
                 $existing->documents()->delete();
             }
 
@@ -201,12 +247,12 @@ class RegistrationController extends Controller
         $member->documents()->create([
             'identity_document_path' => $step3['identity_document_path'],
             'identity_document_type' => $step3['identity_document_type'],
-            'payment_proof_path'     => $paymentPath,
+            'payment_proof_path'     => $paymentPath ?? 'documents/payments/midtrans_sandbox_auto.png',
             'payment_amount'         => $request->payment_amount,
         ]);
 
         // Bersihkan session registrasi
-        session()->forget(['reg_step1', 'reg_step2', 'reg_step3', 'reg_nik']);
+        session()->forget(['reg_step1', 'reg_step2', 'reg_step3', 'reg_nik', 'reg_order_id', 'reg_snap_token']);
 
         return redirect()->route('register.success')
             ->with('member_name', $member->full_name);

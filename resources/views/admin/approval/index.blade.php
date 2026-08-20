@@ -83,16 +83,13 @@
                                     <a href="{{ asset('storage/' . $doc->identity_document_path) }}" target="_blank"
                                         class="flex items-center gap-1 text-xs text-blue-600 hover:underline">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                        Identitas
+                                        Berkas Identitas
                                     </a>
                                     @endif
-                                    @if($doc->payment_proof_path)
-                                    <a href="{{ asset('storage/' . $doc->payment_proof_path) }}" target="_blank"
-                                        class="flex items-center gap-1 text-xs text-emerald-600 hover:underline">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                        Bukti Bayar
-                                    </a>
-                                    @endif
+                                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60">
+                                        <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        Midtrans Lunas
+                                    </span>
                                 </div>
                                 @else
                                 <span class="text-xs text-gray-400">—</span>
@@ -385,10 +382,14 @@
                                 </p>
                             </td>
                             <td class="px-5 py-4 text-xs">
-                                @if($doc && $doc->payment_proof_path)
+                                @if($m->order_id || str_contains($doc->payment_proof_path ?? '', 'midtrans'))
+                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60">
+                                    Midtrans Gateway
+                                </span>
+                                @elseif($doc && $doc->payment_proof_path)
                                 <a href="{{ asset('storage/' . $doc->payment_proof_path) }}" target="_blank" class="flex items-center gap-1 text-blue-600 hover:underline font-medium">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <span>Bukti Transfer</span>
+                                    <span>Bukti Manual</span>
                                 </a>
                                 @else
                                 <span class="text-gray-400">—</span>

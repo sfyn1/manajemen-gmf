@@ -14,6 +14,7 @@ Route::get('/dashboard', [MemberController\DashboardController::class, 'index'])
 // ── Class Booking ─────────────────────────────────────────────────────────────
 Route::prefix('booking')->name('booking.')->group(function () {
     Route::get('/', [MemberController\ClassBookingController::class, 'index'])->name('index');
+    Route::post('/confirm-success', [MemberController\ClassBookingController::class, 'confirmSuccess'])->name('confirm-success');
     Route::post('/{schedule}', [MemberController\ClassBookingController::class, 'book'])->name('book');
     Route::delete('/{booking}/cancel', [MemberController\ClassBookingController::class, 'cancel'])->name('cancel');
 });
@@ -26,6 +27,8 @@ Route::get('/invoice', [MemberController\InvoiceController::class, 'index'])->na
 
 // ── Renewal Membership ────────────────────────────────────────────────────────
 Route::post('/renewal', [MemberController\RenewalController::class, 'store'])->name('renewal.store');
+Route::delete('/renewal/{renewal}/cancel', [MemberController\RenewalController::class, 'cancel'])->name('renewal.cancel');
+Route::post('/renewal/confirm-success', [MemberController\RenewalController::class, 'confirmSuccess'])->name('renewal.confirm-success');
 
 // ── Profile ───────────────────────────────────────────────────────────────────
 Route::get('/profile', [MemberController\ProfileController::class, 'index'])->name('profile.index');

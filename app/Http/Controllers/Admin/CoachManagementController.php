@@ -42,6 +42,7 @@ class CoachManagementController extends Controller
 
         Coach::create([
             'user_id'          => $user->id,
+            'full_name'        => $user->name,
             'phone'            => $data['phone'] ?? null,
             'bio'              => $data['bio'] ?? null,
             'rate_per_session' => $data['rate_per_session'],
@@ -69,13 +70,17 @@ class CoachManagementController extends Controller
             'is_active'        => ['boolean'],
         ]);
 
-        $coach->user->update([
+        $userData = [
             'name'  => $data['name'],
             'email' => $data['email'],
-            ...(filled($data['password']) ? ['password' => Hash::make($data['password'])] : []),
-        ]);
+        ];
+        if ($request->filled('password')) {
+            $userData['password'] = Hash::make($request->password);
+        }
+        $coach->user->update($userData);
 
         $coach->update([
+            'full_name'        => $data['name'],
             'phone'            => $data['phone'] ?? null,
             'bio'              => $data['bio'] ?? null,
             'rate_per_session' => $data['rate_per_session'],

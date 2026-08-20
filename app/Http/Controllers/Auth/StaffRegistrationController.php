@@ -17,6 +17,13 @@ class StaffRegistrationController extends Controller
      */
     public function showForm(Request $request)
     {
+        // Jika sedang login (misal sebagai Owner di browser yang sama), logout dulu agar bisa mendaftar akun staff baru
+        if (auth()->check()) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         $token = $request->query('token');
 
         if (! $token) {
@@ -92,6 +99,7 @@ class StaffRegistrationController extends Controller
         if ($invitation->role === 'coach') {
             Coach::create([
                 'user_id'          => $user->id,
+                'full_name'        => $user->name,
                 'phone'            => $request->phone,
                 'rate_per_session' => 0,
                 'is_active'        => true,

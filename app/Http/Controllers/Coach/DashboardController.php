@@ -16,7 +16,16 @@ class DashboardController extends Controller
         // 1. Sync & buat otomatis tugas verifikasi kehadiran untuk kelas yang sudah lewat / hari ini
         AttendanceVerification::syncFromBookings();
 
-        $coach = Coach::where('user_id', auth()->id())->with('user')->firstOrFail();
+        $coach = Coach::firstOrCreate(
+            ['user_id' => auth()->id()],
+            [
+                'full_name'        => auth()->user()->name,
+                'phone'            => auth()->user()->phone,
+                'rate_per_session' => 0,
+                'is_active'        => true,
+            ]
+        );
+        $coach->load('user');
 
         $pendingVerifications = AttendanceVerification::where('coach_id', $coach->id)
             ->whereIn('status', ['pending', 'rejected'])

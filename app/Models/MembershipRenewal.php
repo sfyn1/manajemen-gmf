@@ -20,11 +20,20 @@ class MembershipRenewal extends Model
         'refund_notes',
         'processed_by',
         'processed_at',
+        'order_id',
+        'snap_token',
+        'payment_type',
+        'payment_status',
+        'refund_amount',
+        'refund_reason',
+        'refunded_at',
     ];
 
     protected $casts = [
         'payment_amount' => 'decimal:2',
+        'refund_amount'  => 'decimal:2',
         'processed_at'   => 'datetime',
+        'refunded_at'     => 'datetime',
     ];
 
     public function scopePending($query)

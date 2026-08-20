@@ -156,7 +156,7 @@
                 {{-- Statistics Grid --}}
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-slate-800/80">
                     <div>
-                        <p class="text-3xl font-extrabold text-[#f05a2a] font-display">500+</p>
+                        <p class="text-3xl font-extrabold text-[#f05a2a] font-display">100+</p>
                         <p class="text-slate-400 text-xs font-medium mt-1">Member Aktif</p>
                     </div>
                     <div>

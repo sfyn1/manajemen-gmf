@@ -4,13 +4,15 @@
 @section('page-subtitle', 'Kelola data pelatih dan rate komisi per sesi')
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
-    <div></div>
-    <a href="{{ route('admin.coaches.create') }}"
-        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#f05a2a] hover:bg-[#e13b12] text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-[#f05a2a]/20">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        <span>Tambah Pelatih Baru</span>
-    </a>
+<div class="mb-6">
+    <div class="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-xs text-slate-300 flex items-center justify-between gap-3 shadow-md">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#f05a2a]/20 text-[#f05a2a] flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span>Akun pelatih baru dibuat melalui <strong>Undangan Email Staff</strong> oleh Owner. Gunakan opsi <strong>Edit</strong> di bawah untuk mengatur <strong>Rate Komisi / Sesi</strong>, kontak, & status pelatih.</span>
+        </div>
+    </div>
 </div>
 
 <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">

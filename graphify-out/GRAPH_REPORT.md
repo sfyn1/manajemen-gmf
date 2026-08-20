@@ -1,33 +1,38 @@
-# Graph Report - manajemen-gmf  (2026-08-03)
+# Graph Report - manajemen-gmf  (2026-08-05)
 
 ## Corpus Check
-- 268 files · ~317,088 words
+- 273 files · ~319,484 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2042 nodes · 2700 edges · 266 communities (232 shown, 34 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 67 edges (avg confidence: 0.72)
+- 2063 nodes · 2748 edges · 269 communities (233 shown, 36 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 72 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
+## Graph Freshness
+- Built from commit: `daa51925`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
+
 ## Community Hubs (Navigation)
-- MemberApprovedMail.php
+- Illuminate\Bus\Queueable
 - gray
 - search
-- Coach
+- AttendanceVerification
 - color
 - button
 - slide_search_core.py
 - Illuminate\Database\Eloquent\Factories\HasFactory
 - spacing
-- Payroll
+- Coach
 - TestTailwindConfigGenerator
 - html-token-validator.py
 - BM25
 - package.json
 - ClassSchedule
-- LandingPageContent
+- Illuminate\Http\Request
 - User
-- Controller
+- Product
 - generate-slide.py
 - TailwindConfigGenerator
 - design_system.py
@@ -41,10 +46,10 @@
 - extract-colors.cjs
 - validate-asset.cjs
 - ShadcnInstaller
-- Product
+- StaffInvitation
 - composer.json
 - scripts
-- Illuminate\Http\Request
+- MembershipPackage
 - validate-tokens.cjs
 - test_tailwind_config_gen.py
 - Member
@@ -84,7 +89,7 @@
 - ui-ux-pro-max/SKILL.md
 - inject-brand-context.cjs
 - embed-tokens.cjs
-- duration
+- primitive
 - patch
 - search
 - spesifikasi-sim-fitness-center.md
@@ -107,13 +112,13 @@
 - logo/generate.py
 - generate-tokens.cjs
 - ._base_config
-- Illuminate\Database\Seeder
+- ClassBooking
 - component-tokens.md
 - sync-brand-to-tokens.cjs
 - _run
 - BM25
 - component-specs.md
-- none
+- radius
 - ._generate_javascript
 - format_ascii_box
 - CheckMemberActive.php
@@ -127,21 +132,21 @@
 - ScanQrController
 - config
 - slides/SKILL.md
-- sm
+- shadow
 - AppServiceProvider
 - TestCase
-- radius
+- lg
 - psr-4
 - MembershipRenewal
-- xl
-- design-tokens-starter.json
-- post-create-project-cmd
-- Carbon
+- md
+- default
+- RegistrationController
+- Illuminate\Database\Seeder
 - ExampleTest
 - test_sync_brand_to_tokens.py
 - main
 - .__init__
-- extra
+- Controller
 - slides-create.md
 - create.md
 - workflows/graphify.md
@@ -165,17 +170,17 @@
 - step2.blade.php
 - step3.blade.php
 - step4.blade.php
-- CheckMembershipExpiry.php
-- StaffInvitationMail
-- destructive-foreground
-- muted
-- primary
-- primary-foreground
+- extra
+- ApprovalCenterController.php
+- MidtransService
+- .syncFromBookings
+- MemberApprovedMail
+- test
 
 ## God Nodes (most connected - your core abstractions)
-1. `Controller` - 59 edges
+1. `Controller` - 61 edges
 2. `TailwindConfigGenerator` - 58 edges
-3. `Member` - 50 edges
+3. `Member` - 53 edges
 4. `TestTailwindConfigGenerator` - 35 edges
 5. `ShadcnInstaller` - 34 edges
 6. `Coach` - 33 edges
@@ -199,11 +204,11 @@
 ## Import Cycles
 - None detected.
 
-## Communities (266 total, 34 thin omitted)
+## Communities (269 total, 36 thin omitted)
 
-### Community 0 - "MemberApprovedMail.php"
-Cohesion: 0.22
-Nodes (10): MemberApprovedMail, MemberRejectedMail, MembershipReminderMail, OtpMail, Illuminate\Bus\Queueable, Illuminate\Contracts\Queue\ShouldQueue, Illuminate\Mail\Mailable, Illuminate\Mail\Mailables\Content (+2 more)
+### Community 0 - "Illuminate\Bus\Queueable"
+Cohesion: 0.20
+Nodes (10): MemberRejectedMail, MembershipReminderMail, OtpMail, StaffInvitationMail, Illuminate\Bus\Queueable, Illuminate\Contracts\Queue\ShouldQueue, Illuminate\Mail\Mailable, Illuminate\Mail\Mailables\Content (+2 more)
 
 ### Community 1 - "gray"
 Cohesion: 0.05
@@ -213,13 +218,13 @@ Nodes (53): $type, $value, $type, $value, $type, $value, $type, $value (+45 more
 Cohesion: 0.07
 Nodes (42): BM25, detect_domain(), get_cip_brief(), _load_csv(), Load CSV and return list of dicts, Core search function using BM25, Auto-detect the most relevant domain from query, Main search function with auto-domain detection (+34 more)
 
-### Community 3 - "Coach"
-Cohesion: 0.08
-Nodes (6): CoachManagementController, AttendanceVerificationController, DashboardController, TeachingHistoryController, AttendanceVerification, Coach
+### Community 3 - "AttendanceVerification"
+Cohesion: 0.14
+Nodes (3): AttendanceVerificationController, DashboardController, AttendanceVerification
 
 ### Community 4 - "color"
-Cohesion: 0.08
-Nodes (25): $type, $value, background, destructive, foreground, muted-foreground, primary-hover, ring (+17 more)
+Cohesion: 0.04
+Nodes (48): $type, $value, background, destructive, destructive-foreground, foreground, muted, muted-foreground (+40 more)
 
 ### Community 5 - "button"
 Cohesion: 0.06
@@ -231,15 +236,15 @@ Nodes (36): format_context(), format_result(), main(), Format a single search re
 
 ### Community 7 - "Illuminate\Database\Eloquent\Factories\HasFactory"
 Cohesion: 0.10
-Nodes (9): DashboardController, RosterController, ClassBooking, MembershipDocument, Visit, Carbon\Carbon, Illuminate\Database\Eloquent\Factories\HasFactory, Illuminate\Database\Eloquent\Model (+1 more)
+Nodes (9): DashboardController, DashboardController, MembershipDocument, OtpCode, ProductSale, Visit, Illuminate\Database\Eloquent\Factories\HasFactory, Illuminate\Database\Eloquent\Model (+1 more)
 
 ### Community 8 - "spacing"
 Cohesion: 0.06
 Nodes (34): $type, $value, $type, $value, $type, $value, $type, $value (+26 more)
 
-### Community 9 - "Payroll"
-Cohesion: 0.16
-Nodes (4): PayrollController, CommissionController, DashboardController, Payroll
+### Community 9 - "Coach"
+Cohesion: 0.10
+Nodes (6): CoachManagementController, PayrollController, CommissionController, TeachingHistoryController, Coach, Payroll
 
 ### Community 10 - "TestTailwindConfigGenerator"
 Cohesion: 0.07
@@ -258,16 +263,16 @@ Cohesion: 0.08
 Nodes (24): alpinejs, concurrently, laravel-echo, laravel-vite-plugin, dependencies, alpinejs, laravel-echo, pusher-js (+16 more)
 
 ### Community 14 - "ClassSchedule"
-Cohesion: 0.11
-Nodes (4): ClassScheduleController, ClassBookingController, ClassSchedule, ClassType
+Cohesion: 0.14
+Nodes (3): ClassScheduleController, ClassSchedule, ClassType
+
+### Community 15 - "Illuminate\Http\Request"
+Cohesion: 0.16
+Nodes (5): LandingPageContentController, ForgotPasswordController, ReportController, LandingPageContent, Illuminate\Http\Request
 
 ### Community 16 - "User"
-Cohesion: 0.13
-Nodes (5): StaffAccountController, StaffInvitation, User, Illuminate\Foundation\Auth\User, Illuminate\Notifications\Notifiable
-
-### Community 17 - "Controller"
-Cohesion: 0.12
-Nodes (7): LoginController, LogoutController, Controller, ClassHistoryController, DashboardController, InvoiceController, ProfileController
+Cohesion: 0.15
+Nodes (4): StaffAccountController, User, Illuminate\Foundation\Auth\User, Illuminate\Notifications\Notifiable
 
 ### Community 18 - "generate-slide.py"
 Cohesion: 0.15
@@ -321,21 +326,17 @@ Nodes (13): checkManifest(), formatBytes(), formatOutput(), fs, main(), parseFil
 Cohesion: 0.14
 Nodes (8): Handle shadcn/ui component installation., ShadcnInstaller, Test adding components that are already installed., Test initialization with default project root., Test initialization with custom project root., Test checking for non-existent shadcn config., Test getting installed components when none exist., Test getting installed components when files exist.
 
-### Community 31 - "Product"
-Cohesion: 0.12
-Nodes (4): ProductSaleController, ReportController, Product, ProductSale
+### Community 31 - "StaffInvitation"
+Cohesion: 0.11
+Nodes (9): CheckExpiry, GenerateAttendanceVerifications, GenerateVerifications, StaffRegistrationController, MidtransWebhookController, StaffInvitation, Carbon, Carbon\Carbon (+1 more)
 
 ### Community 32 - "composer.json"
 Cohesion: 0.14
 Nodes (13): autoload-dev, psr-4, description, keywords, license, minimum-stability, name, prefer-stable (+5 more)
 
 ### Community 33 - "scripts"
-Cohesion: 0.14
-Nodes (14): scripts, dev, post-autoload-dump, post-update-cmd, pre-package-uninstall, test, Composer\\Config::disableProcessTimeout, Illuminate\\Foundation\\ComposerScripts::postAutoloadDump (+6 more)
-
-### Community 34 - "Illuminate\Http\Request"
-Cohesion: 0.07
-Nodes (9): MembershipController, PackageController, ForgotPasswordController, StaffRegistrationController, RegistrationController, RenewalController, MembershipPackage, OtpCode (+1 more)
+Cohesion: 0.13
+Nodes (15): scripts, dev, post-autoload-dump, post-create-project-cmd, post-update-cmd, pre-package-uninstall, Composer\\Config::disableProcessTimeout, Illuminate\\Foundation\\ComposerScripts::postAutoloadDump (+7 more)
 
 ### Community 35 - "validate-tokens.cjs"
 Cohesion: 0.24
@@ -489,9 +490,9 @@ Nodes (10): extractColorsFromTable(), extractCoreAttributes(), extractHexColors(
 Cohesion: 0.18
 Nodes (8): args, fs, minimal, MINIMAL_TOKENS, path, projectRoot, tokensPath, wrapStyle
 
-### Community 74 - "duration"
-Cohesion: 0.20
-Nodes (10): fast, normal, slow, $type, $value, $type, $value, duration (+2 more)
+### Community 74 - "primitive"
+Cohesion: 0.18
+Nodes (11): fast, normal, slow, $type, $value, $type, $value, primitive (+3 more)
 
 ### Community 75 - "patch"
 Cohesion: 0.18
@@ -581,9 +582,9 @@ Nodes (9): flattenTokens(), fs, generateCSS(), generateTailwind(), main(), parse
 Cohesion: 0.22
 Nodes (6): Path, Initialize generator. Args: typescript: If True, generate .ts config, else .js…, Determine default output path., Create base configuration structure., Get default content paths for framework., Any
 
-### Community 97 - "Illuminate\Database\Seeder"
-Cohesion: 0.27
-Nodes (4): DatabaseSeeder, MembershipPackageSeeder, UserSeeder, Illuminate\Database\Seeder
+### Community 97 - "ClassBooking"
+Cohesion: 0.19
+Nodes (3): RosterController, ClassBookingController, ClassBooking
 
 ### Community 98 - "component-tokens.md"
 Cohesion: 0.25
@@ -605,9 +606,9 @@ Nodes (5): BM25, BM25 ranking algorithm for text search, Lowercase, split, remov
 Cohesion: 0.25
 Nodes (7): Anatomy, Button, Component Specifications, Input, Sizes, States, Variants
 
-### Community 103 - "none"
-Cohesion: 0.67
-Nodes (4): $type, $value, none, none
+### Community 103 - "radius"
+Cohesion: 0.29
+Nodes (8): xl, $type, $value, radius, full, xl, $type, $value
 
 ### Community 104 - "._generate_javascript"
 Cohesion: 0.29
@@ -622,8 +623,8 @@ Cohesion: 0.43
 Nodes (4): CheckMemberActive, CheckRole, Closure, Symfony\Component\HttpFoundation\Response
 
 ### Community 107 - "require"
-Cohesion: 0.25
-Nodes (8): require, intervention/image, laravel/framework, laravel/reverb, laravel/tinker, php, simplesoftwareio/simple-qrcode, spatie/laravel-permission
+Cohesion: 0.22
+Nodes (9): require, intervention/image, laravel/framework, laravel/reverb, laravel/tinker, midtrans/midtrans-php, php, simplesoftwareio/simple-qrcode (+1 more)
 
 ### Community 108 - "require-dev"
 Cohesion: 0.25
@@ -657,77 +658,73 @@ Nodes (7): pestphp/pest-plugin, php-http/discovery, config, allow-plugins, optim
 Cohesion: 0.33
 Nodes (5): References (Knowledge Base), Routing, Slides, Subcommands, When to Use
 
-### Community 117 - "sm"
-Cohesion: 0.60
-Nodes (5): sm, sm, sm, $type, $value
+### Community 117 - "shadow"
+Cohesion: 0.27
+Nodes (10): sm, $type, $value, shadow, none, sm, none, sm (+2 more)
 
 ### Community 119 - "TestCase"
 Cohesion: 0.40
 Nodes (3): Illuminate\Foundation\Testing\TestCase, ExampleTest, TestCase
 
-### Community 120 - "radius"
-Cohesion: 0.15
-Nodes (19): $type, $value, lg, $type, $value, $type, $value, $type (+11 more)
+### Community 120 - "lg"
+Cohesion: 0.60
+Nodes (5): lg, $type, $value, lg, lg
 
 ### Community 121 - "psr-4"
 Cohesion: 0.40
 Nodes (5): autoload, psr-4, App\\, Database\\Factories\\, Database\\Seeders\\
 
-### Community 123 - "xl"
+### Community 122 - "MembershipRenewal"
+Cohesion: 0.13
+Nodes (3): ApprovalCenterController, RenewalController, MembershipRenewal
+
+### Community 123 - "md"
 Cohesion: 0.67
-Nodes (4): xl, xl, $type, $value
+Nodes (4): $type, $value, md, md
 
-### Community 124 - "design-tokens-starter.json"
-Cohesion: 0.17
-Nodes (11): $type, $value, dark, semantic, $schema, $type, $value, semantic (+3 more)
+### Community 124 - "default"
+Cohesion: 0.67
+Nodes (4): $type, $value, default, default
 
-### Community 125 - "post-create-project-cmd"
-Cohesion: 0.50
-Nodes (4): post-create-project-cmd, @php artisan key:generate --ansi, @php artisan migrate --graceful --ansi, @php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\
+### Community 126 - "Illuminate\Database\Seeder"
+Cohesion: 0.27
+Nodes (4): DatabaseSeeder, MembershipPackageSeeder, UserSeeder, Illuminate\Database\Seeder
 
-### Community 126 - "Carbon"
+### Community 131 - "Controller"
 Cohesion: 0.12
-Nodes (8): CheckExpiry, GenerateAttendanceVerifications, GenerateVerifications, Carbon, UserFactory, Illuminate\Console\Command, Illuminate\Database\Eloquent\Factories\Factory, static
+Nodes (7): LoginController, LogoutController, Controller, ClassHistoryController, DashboardController, InvoiceController, ProfileController
 
-### Community 131 - "extra"
+### Community 256 - "extra"
 Cohesion: 0.67
 Nodes (3): extra, laravel, dont-discover
 
-### Community 258 - "destructive-foreground"
-Cohesion: 0.67
-Nodes (3): destructive-foreground, $type, $value
+### Community 259 - ".syncFromBookings"
+Cohesion: 0.38
+Nodes (3): UserFactory, Illuminate\Database\Eloquent\Factories\Factory, static
 
-### Community 259 - "muted"
+### Community 261 - "test"
 Cohesion: 0.67
-Nodes (3): muted, $type, $value
-
-### Community 260 - "primary"
-Cohesion: 0.67
-Nodes (3): primary, $type, $value
-
-### Community 261 - "primary-foreground"
-Cohesion: 0.67
-Nodes (3): primary-foreground, $type, $value
+Nodes (3): test, @php artisan config:clear --ansi @no_additional_args, @php artisan test
 
 ## Knowledge Gaps
-- **728 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+723 more)
+- **729 isolated node(s):** `fs`, `path`, `fs`, `path`, `fs` (+724 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **34 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `primitive` connect `radius` to `gray`, `spacing`, `duration`, `fontSize`, `design-tokens-starter.json`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Why does `Controller` connect `Controller` to `Illuminate\Http\Request`, `Coach`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `Payroll`, `ClassSchedule`, `LandingPageContent`, `User`, `ScanQrController`, `MembershipRenewal`, `Product`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `color` connect `gray` to `radius`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+- **Why does `Controller` connect `Controller` to `ApprovalCenterController.php`, `MembershipPackage`, `AttendanceVerification`, `ClassBooking`, `Member`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `Coach`, `ClassSchedule`, `Illuminate\Http\Request`, `User`, `Product`, `ScanQrController`, `MembershipRenewal`, `RegistrationController`, `StaffInvitation`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `primitive` connect `primitive` to `gray`, `color`, `radius`, `spacing`, `shadow`, `fontSize`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `Member` connect `Member` to `Illuminate\Bus\Queueable`, `ApprovalCenterController.php`, `MemberApprovedMail`, `Illuminate\Database\Eloquent\Factories\HasFactory`, `Illuminate\Http\Request`, `ScanQrController`, `MembershipRenewal`, `RegistrationController`, `StaffInvitation`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 10 inferred relationships involving `Member` (e.g. with `.handle()` and `.markExpired()`) actually correct?**
-  _`Member` has 10 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 13 inferred relationships involving `Member` (e.g. with `.handle()` and `.markExpired()`) actually correct?**
+  _`Member` has 13 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `fs`, `path`, `fs` to the rest of the system?**
-  _728 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _729 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `gray` be split into smaller, more focused modules?**
   _Cohesion score 0.05370101596516691 - nodes in this community are weakly interconnected._

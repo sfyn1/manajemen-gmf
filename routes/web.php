@@ -25,6 +25,10 @@ Route::get('/', function () {
 Route::get('/qr/verify/{token}', [\App\Http\Controllers\Admin\ScanQrController::class, 'verify'])
     ->name('qr.verify');
 
+// ── Midtrans Webhook Handler ──────────────────────────────────────────────────
+Route::post('/api/midtrans/notification', [\App\Http\Controllers\Payment\MidtransWebhookController::class, 'handle'])
+    ->name('midtrans.notification');
+
 // ── Self-registration Member (publik, sebelum login) ─────────────────────────
 Route::prefix('register')->name('register.')->group(function () {
     Route::get('/', [RegistrationController::class, 'showStep1'])->name('step1');

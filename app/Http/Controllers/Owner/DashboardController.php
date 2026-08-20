@@ -18,7 +18,11 @@ class DashboardController extends Controller
         $totalRevenueProduct            = ProductSale::sum('total_price');
         $totalRevenueClassBookings      = \App\Models\ClassBooking::whereIn('status', [\App\Models\ClassBooking::STATUS_BOOKED, \App\Models\ClassBooking::STATUS_ATTENDED])->sum('payment_amount');
 
-        $totalRevenue                   = $totalRevenueMembershipInitial + $totalRevenueMembershipRenewals + $totalRevenueProduct + $totalRevenueClassBookings;
+        $totalRefundedInitial  = Member::where('payment_status', 'refunded')->sum('refund_amount');
+        $totalRefundedRenewals = \App\Models\MembershipRenewal::where('payment_status', 'refunded')->sum('refund_amount');
+        $totalRefundedAmount   = $totalRefundedInitial + $totalRefundedRenewals;
+
+        $totalRevenue = max(0, ($totalRevenueMembershipInitial + $totalRevenueMembershipRenewals + $totalRevenueProduct + $totalRevenueClassBookings) - $totalRefundedAmount);
         $totalMembers           = Member::active()->count();
         $totalPayrollPaid       = Payroll::where('status', 'paid')->whereMonth('updated_at', now()->month)->sum('total_amount');
         $productSalesCount      = ProductSale::whereMonth('created_at', now()->month)->count();

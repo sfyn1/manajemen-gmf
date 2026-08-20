@@ -27,6 +27,11 @@ return Application::configure(basePath: dirname(__DIR__))
             return '/';
         });
 
+        $middleware->validateCsrfTokens(except: [
+            'api/midtrans/notification',
+            'midtrans/notification',
+        ]);
+
         $middleware->alias([
             'role'           => \App\Http\Middleware\CheckRole::class,
             'member.active'  => \App\Http\Middleware\CheckMemberActive::class,

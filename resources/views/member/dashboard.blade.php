@@ -23,19 +23,44 @@
 @endif
 
 @if(isset($pendingRenewal) && $pendingRenewal)
-<div class="mb-6 p-4 sm:p-5 rounded-3xl bg-amber-50 border border-amber-200 text-amber-900 text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+@php $isMidtransUnpaid = in_array($pendingRenewal->payment_method, ['qris', 'midtrans']) && $pendingRenewal->payment_status !== 'settlement'; @endphp
+<div class="mb-6 p-4 sm:p-5 rounded-3xl {{ $isMidtransUnpaid ? 'bg-indigo-50 border border-indigo-200 text-indigo-950' : 'bg-amber-50 border border-amber-200 text-amber-900' }} text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
     <div class="flex items-start sm:items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="w-10 h-10 rounded-2xl {{ $isMidtransUnpaid ? 'bg-indigo-600' : 'bg-amber-500' }} text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">
+            @if($isMidtransUnpaid)
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            @else
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            @endif
         </div>
         <div>
-            <p class="font-extrabold text-xs sm:text-sm text-amber-950 font-display">Pengajuan Perpanjangan Membership Sedang Diproses</p>
-            <p class="text-xs text-amber-800 mt-0.5 font-medium">Paket: <strong>{{ $pendingRenewal->package?->name }}</strong> ({{ $pendingRenewal->payment_method === 'qris' ? 'QRIS Digital' : 'Tunai di Kasir' }}) — Rp {{ number_format($pendingRenewal->payment_amount, 0, ',', '.') }}</p>
+            <p class="font-extrabold text-xs sm:text-sm {{ $isMidtransUnpaid ? 'text-indigo-950' : 'text-amber-950' }} font-display">
+                {{ $isMidtransUnpaid ? 'Pembayaran Midtrans Online Belum Selesai' : 'Pengajuan Perpanjangan (Tunai) Sedang Diproses' }}
+            </p>
+            <p class="text-xs {{ $isMidtransUnpaid ? 'text-indigo-800' : 'text-amber-800' }} mt-0.5 font-medium">
+                Paket: <strong>{{ $pendingRenewal->package?->name }}</strong> — Rp {{ number_format($pendingRenewal->payment_amount, 0, ',', '.') }}
+                ({{ $isMidtransUnpaid ? 'Midtrans Gateway' : 'Tunai di Kasir' }})
+            </p>
         </div>
     </div>
-    <span class="self-start sm:self-auto px-3.5 py-1.5 bg-amber-200/80 border border-amber-300 text-amber-950 text-[11px] font-extrabold rounded-xl shrink-0 uppercase tracking-wide">
-        Menunggu Konfirmasi Admin
-    </span>
+    
+    <div class="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+        @if($isMidtransUnpaid && $pendingRenewal->snap_token)
+        <button type="button" onclick="payRenewalSnap('{{ $pendingRenewal->snap_token }}')"
+            class="px-4 py-2 bg-[#f05a2a] hover:bg-[#e13b12] text-white text-xs font-bold rounded-xl shadow-md transition-all">
+            Lanjutkan Pembayaran →
+        </button>
+        @endif
+
+        <form method="POST" action="{{ route('member.renewal.cancel', $pendingRenewal) }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" onclick="return confirm('Batalkan pengajuan perpanjangan ini?')"
+                class="px-3.5 py-2 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-xs font-bold rounded-xl transition-colors">
+                Batalkan
+            </button>
+        </form>
+    </div>
 </div>
 @endif
 
@@ -173,7 +198,7 @@
 
                 {{-- Modal Perpanjang (Akses Penuh Z-Index & Sembunyikan Navigasi Bawah) --}}
                 <div x-show="showRenewalModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 text-left" x-cloak @click.self="closeModal()">
-                    <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg relative max-h-[85vh] overflow-y-auto scrollbar-thin" x-data="{ method: 'qris', selectedPrice: '{{ $packages->first()?->price ?? 0 }}' }">
+                    <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg relative max-h-[85vh] overflow-y-auto scrollbar-thin" x-data="{ method: 'midtrans', selectedPrice: '{{ $packages->first()?->price ?? 0 }}' }">
                         <button type="button" @click="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
@@ -200,10 +225,10 @@
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Metode Pembayaran</label>
                                 <div class="grid grid-cols-2 gap-3">
                                     <label class="flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer text-xs font-bold transition-all"
-                                        :class="method === 'qris' ? 'border-[#f05a2a] bg-[#f05a2a]/10 text-[#f05a2a]' : 'border-slate-200 text-slate-600'">
-                                        <input type="radio" name="payment_method" value="qris" x-model="method" class="hidden">
+                                        :class="method === 'midtrans' ? 'border-[#f05a2a] bg-[#f05a2a]/10 text-[#f05a2a]' : 'border-slate-200 text-slate-600'">
+                                        <input type="radio" name="payment_method" value="midtrans" x-model="method" class="hidden">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2a1 1 0 001-1v-5a1 1 0 00-1-1h-3m-6 0H7a1 1 0 00-1 1v5a1 1 0 001 1h2m-6 0h16M5 8h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V10a2 2 0 012-2z"/></svg>
-                                        <span>QRIS Digital</span>
+                                        <span>Midtrans Gateway</span>
                                     </label>
                                     <label class="flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer text-xs font-bold transition-all"
                                         :class="method === 'cash' ? 'border-[#f05a2a] bg-[#f05a2a]/10 text-[#f05a2a]' : 'border-slate-200 text-slate-600'">
@@ -214,16 +239,14 @@
                                 </div>
                             </div>
 
-                            <div x-show="method === 'qris'" class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                                <p class="text-xs text-slate-600 font-medium">Scan QRIS berikut melalui M-Banking atau e-Wallet Anda:</p>
-                                <div class="w-40 h-40 bg-white border border-slate-200 rounded-xl mx-auto flex items-center justify-center shadow-inner">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021126580014ID.CO.QRIS.WWW01189360091400000000005204599953033605802ID5922GINTUNG%20MASTER%20FITNESS6007TANGERANG61051541062070703A0163041A4B" alt="QRIS GMF" class="w-36 h-36 object-contain">
+                            <div x-show="method === 'midtrans'" class="p-4 bg-slate-900 text-white rounded-2xl space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#f05a2a]">Pembayaran Online Instan</span>
+                                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono">Midtrans Snap</span>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">Unggah Bukti Transfer QRIS</label>
-                                    <input type="file" name="payment_proof" accept="image/*"
-                                        class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#f05a2a] file:text-white hover:file:bg-[#e13b12]">
-                                </div>
+                                <p class="text-xs text-slate-300">
+                                    Mendukung QRIS (GoPay, ShopeePay, Dana), Virtual Account (BCA, Mandiri, BNI, BRI), & Kartu Kredit.
+                                </p>
                             </div>
 
                             <div x-show="method === 'cash'" class="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-900 flex items-start gap-2.5">
@@ -235,7 +258,7 @@
 
                             <div class="pt-4 flex gap-3">
                                 <button type="button" @click="closeModal()" class="flex-1 py-3.5 border border-slate-200 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50">Batal</button>
-                                <button type="submit" class="flex-1 py-3.5 bg-[#f05a2a] hover:bg-[#e13b12] text-[#fff] text-xs font-bold rounded-xl shadow-md shadow-[#f05a2a]/20">Kirim Pengajuan</button>
+                                <button type="submit" class="flex-1 py-3.5 bg-[#f05a2a] hover:bg-[#e13b12] text-[#fff] text-xs font-bold rounded-xl shadow-md shadow-[#f05a2a]/20">Bayar & Perpanjang →</button>
                             </div>
                         </form>
                     </div>
@@ -379,5 +402,61 @@ function downloadCardPNG() {
     });
 }
 </script>
+
+@php
+    $activeSnapToken = session('rnw_snap_token') ?? (isset($pendingRenewal) && $pendingRenewal->snap_token && $pendingRenewal->payment_status !== 'settlement' ? $pendingRenewal->snap_token : null);
+    $snapJsUrl = config('midtrans.is_production') 
+        ? 'https://app.midtrans.com/snap/snap.js' 
+        : 'https://app.sandbox.midtrans.com/snap/snap.js';
+@endphp
+@if($activeSnapToken || (isset($pendingRenewal) && $pendingRenewal->snap_token))
+<script src="{{ $snapJsUrl }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
+<script>
+    async function confirmRenewalPayment(orderId) {
+        try {
+            const res = await fetch('{{ route("member.renewal.confirm-success") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ order_id: orderId })
+            });
+            await res.json();
+        } catch (e) {
+            console.error('Error confirming renewal payment:', e);
+        } finally {
+            window.location.reload();
+        }
+    }
+
+    function payRenewalSnap(token) {
+        if (typeof snap !== 'undefined') {
+            snap.pay(token, {
+                onSuccess: function (result) {
+                    confirmRenewalPayment(result ? result.order_id : null);
+                },
+                onPending: function (result) {
+                    confirmRenewalPayment(result ? result.order_id : null);
+                },
+                onError: function (result) {
+                    alert("Pembayaran terganggu atau dibatalkan.");
+                },
+                onClose: function () {
+                    window.location.reload();
+                }
+            });
+        } else {
+            alert("Sedang memuat sistem pembayaran... Silakan coba beberapa detik lagi.");
+        }
+    }
+    @if(session('rnw_snap_token'))
+    document.addEventListener('DOMContentLoaded', function () {
+        payRenewalSnap('{{ session('rnw_snap_token') }}');
+    });
+    @endif
+</script>
+@php session()->forget('rnw_snap_token'); @endphp
+@endif
 @endpush
 @endsection
