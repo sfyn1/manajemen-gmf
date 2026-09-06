@@ -1,119 +1,120 @@
 @extends('layouts.owner')
 
-@section('title', 'Dashboard Owner — Gintung Master Fitness')
-@section('page-title', 'Executive Dashboard')
+@section('title', 'Executive Dashboard — Gintung Master Fitness')
+@section('page-title', 'Executive Console')
 @section('page-subtitle', 'Ringkasan performa finansial & operasional Gintung Master Fitness')
 
 @section('content')
 
-{{-- Stat Cards Grid --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all">
-        <div>
-            <div class="flex items-center justify-between gap-2 mb-3">
-                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Accumulative Revenue</p>
-                <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
+{{-- Bento-Box Stat Cards Grid (Stitch AI Layout) --}}
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+    {{-- Card 1: Total Accumulative Revenue --}}
+    <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-[#ff5722]/10 rounded-full blur-2xl group-hover:bg-[#ff5722]/20 transition-colors duration-500"></div>
+        <div class="flex items-center justify-between mb-3 relative z-10">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Akumulasi Revenue</span>
+            <div class="w-10 h-10 rounded-xl bg-[#ff5722]/15 text-[#ff5722] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[22px] filled">payments</span>
             </div>
+        </div>
+        <div class="relative z-10">
             <div class="flex items-baseline gap-1.5 whitespace-nowrap overflow-hidden">
-                <span class="text-sm font-bold text-slate-400 font-display shrink-0">Rp</span>
-                <span class="text-xl sm:text-2xl xl:text-3xl font-extrabold text-slate-900 font-display tracking-tight truncate">
+                <span class="text-xs font-bold text-[#ff5722] font-display shrink-0">Rp</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display tracking-tight truncate">
                     {{ number_format($totalRevenue, 0, ',', '.') }}
                 </span>
             </div>
+            <p class="text-[11px] text-slate-500 font-semibold mt-2">Membership + Kasir + Sesi</p>
         </div>
-        <p class="text-xs text-[#f05a2a] font-semibold mt-3">Membership + Perpanjangan + Kasir + Kelas</p>
     </div>
 
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all">
-        <div>
-            <div class="flex items-center justify-between gap-2 mb-3">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Member Aktif</p>
-                <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                </div>
+    {{-- Card 2: Member Aktif --}}
+    <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-sky-500/10 rounded-full blur-2xl group-hover:bg-sky-500/20 transition-colors duration-500"></div>
+        <div class="flex items-center justify-between mb-3 relative z-10">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Member Aktif</span>
+            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[22px]">groups</span>
             </div>
-            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display tracking-tight">{{ $totalMembers }}</p>
         </div>
-        <p class="text-xs text-slate-500 mt-3 font-medium">Terdaftar di sistem SIM GMF</p>
+        <div class="relative z-10">
+            <p class="text-3xl font-extrabold text-slate-900 font-display tracking-tight">{{ $totalMembers }}</p>
+            <p class="text-[11px] text-slate-500 mt-2 font-medium">Terdaftar di sistem SIM GMF</p>
+        </div>
     </div>
 
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all">
-        <div>
-            <div class="flex items-center justify-between gap-2 mb-3">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Payroll Dibayar Bulan Ini</p>
-                <div class="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                </div>
+    {{-- Card 3: Payroll Dibayar Bulan Ini --}}
+    <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors duration-500"></div>
+        <div class="flex items-center justify-between mb-3 relative z-10">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Payroll Coach Terbayar</span>
+            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
             </div>
+        </div>
+        <div class="relative z-10">
             <div class="flex items-baseline gap-1.5 whitespace-nowrap overflow-hidden">
-                <span class="text-sm font-bold text-slate-400 font-display shrink-0">Rp</span>
-                <span class="text-xl sm:text-2xl xl:text-3xl font-extrabold text-slate-900 font-display tracking-tight truncate">
+                <span class="text-xs font-bold text-purple-600 font-display shrink-0">Rp</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display tracking-tight truncate">
                     {{ number_format($totalPayrollPaid, 0, ',', '.') }}
                 </span>
             </div>
+            <p class="text-[11px] text-slate-500 mt-2 font-medium">Realisasi pembayaran honor</p>
         </div>
-        <p class="text-xs text-slate-500 mt-3 font-medium">Realisasi pembayaran gaji coach</p>
     </div>
 
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all">
-        <div>
-            <div class="flex items-center justify-between gap-2 mb-3">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Penjualan Produk Bulan Ini</p>
-                <div class="w-10 h-10 rounded-2xl bg-[#f05a2a]/10 text-[#f05a2a] flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                    </svg>
-                </div>
+    {{-- Card 4: Penjualan Produk Bulan Ini --}}
+    <div class="bento-card rounded-2xl p-5 relative overflow-hidden group">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+        <div class="flex items-center justify-between mb-3 relative z-10">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Produk Kasir Terjual</span>
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
             </div>
-            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display tracking-tight">{{ $productSalesCount }}</p>
         </div>
-        <p class="text-xs text-slate-500 mt-3 font-medium">Transaksi merchandise / produk</p>
+        <div class="relative z-10">
+            <p class="text-3xl font-extrabold text-slate-900 font-display tracking-tight">{{ $productSalesCount }}</p>
+            <p class="text-[11px] text-slate-500 mt-2 font-medium">Transaksi merchandise / katering</p>
+        </div>
     </div>
 </div>
 
-{{-- Dynamic Growth Chart Card --}}
-<div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8 mb-8"
-    data-monthly="{{ json_encode($monthlyData) }}">
+{{-- Dynamic Growth Chart Card (Chart.js Kinetic Implementation) --}}
+<div class="bento-card rounded-2xl p-6 sm:p-7 mb-8 relative overflow-hidden group">
     <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-        <div>
-            <h3 class="font-bold text-slate-900 font-display text-base">Grafik Pertumbuhan Member Baru</h3>
-            <p class="text-xs text-slate-500">Statistik pendaftaran member 6 bulan terakhir</p>
+        <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#ff5722]"></span>
+            <div>
+                <h3 class="font-extrabold text-slate-900 font-display text-base">Grafik Pertumbuhan Member Baru</h3>
+                <p class="text-xs text-slate-500 font-medium">Statistik registrasi member 6 bulan terakhir</p>
+            </div>
         </div>
-        <a href="{{ route('owner.reports.index') }}" class="text-xs font-bold text-[#f05a2a] hover:underline">Lihat Laporan Lengkap →</a>
+        <a href="{{ route('owner.reports.index') }}" class="text-xs font-bold text-[#ff5722] hover:underline flex items-center gap-1">
+            <span>Laporan Lengkap</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </a>
     </div>
     
-    <div class="h-44 flex items-end gap-3 sm:gap-6 pt-4">
-        @foreach($monthlyData as $d)
-        @php $maxVal = max(array_column($monthlyData, 'count')) ?: 1; $pct = ($d['count'] / $maxVal) * 100; @endphp
-        <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-            <span class="text-xs font-bold text-slate-700 font-display">{{ $d['count'] }}</span>
-            <div class="w-full rounded-t-xl bg-[#f05a2a] hover:bg-[#ff6f4d] transition-all" style="height: {{ max(6, $pct) }}%; min-height: 8px;"></div>
-            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-tight mt-1">{{ $d['label'] }}</span>
-        </div>
-        @endforeach
+    <div class="relative h-64 w-full">
+        <canvas id="memberGrowthChart"></canvas>
     </div>
 </div>
 
 {{-- Lower Double Columns --}}
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     {{-- Recent Sales --}}
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col justify-between">
+    <div class="bento-card rounded-2xl overflow-hidden flex flex-col justify-between">
         <div>
-            <div class="px-6 py-5 border-b border-slate-100">
-                <h3 class="font-bold text-slate-900 font-display text-base">Penjualan Produk Terbaru</h3>
-                <p class="text-xs text-slate-500">Transaksi kasir produk katering / suplemen / merchandise</p>
+            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-slate-900 font-display text-base">Penjualan Produk Terbaru</h3>
+                    <p class="text-xs text-slate-500">Transaksi kasir produk suplemen / merchandise</p>
+                </div>
+                <span class="material-symbols-outlined text-slate-400">storefront</span>
             </div>
             <div class="divide-y divide-slate-100 text-xs">
                 @forelse($recentSales as $s)
-                <div class="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors">
+                <div class="flex items-center justify-between px-6 py-4 hover:bg-slate-50/70 transition-colors">
                     <div>
                         <p class="text-sm font-bold text-slate-900 font-display">{{ $s->product?->name }}</p>
                         <p class="text-slate-400 font-medium mt-0.5">{{ $s->created_at->diffForHumans() }} • Qty: {{ $s->qty }} pcs</p>
@@ -128,22 +129,25 @@
     </div>
 
     {{-- Payroll Summary --}}
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col justify-between">
+    <div class="bento-card rounded-2xl overflow-hidden flex flex-col justify-between">
         <div>
-            <div class="px-6 py-5 border-b border-slate-100">
-                <h3 class="font-bold text-slate-900 font-display text-base">Ringkasan Payroll Coach Bulan Ini</h3>
-                <p class="text-xs text-slate-500">Status akumulasi komisi & Honor pelatih</p>
+            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-slate-900 font-display text-base">Ringkasan Payroll Coach</h3>
+                    <p class="text-xs text-slate-500">Status akumulasi komisi & honor pelatih</p>
+                </div>
+                <span class="material-symbols-outlined text-slate-400">badge</span>
             </div>
             <div class="divide-y divide-slate-100 text-xs">
                 @forelse($payrollSummary as $p)
-                <div class="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors">
+                <div class="flex items-center justify-between px-6 py-4 hover:bg-slate-50/70 transition-colors">
                     <div>
                         <p class="text-sm font-bold text-slate-900 font-display">{{ $p->coach->user->name }}</p>
                         <p class="text-slate-400 font-medium mt-0.5">{{ $p->total_sessions }} Sesi Mengajar</p>
                     </div>
                     <div class="text-right">
                         <p class="font-extrabold text-sm text-slate-900 font-display">Rp {{ number_format($p->total_amount, 0, ',', '.') }}</p>
-                        <span class="inline-block mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $p->status === 'paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }}">
+                        <span class="inline-block mt-0.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $p->status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200' }}">
                             {{ $p->status === 'paid' ? 'Lunas / Paid' : 'Belum Dibayar' }}
                         </span>
                     </div>
@@ -156,3 +160,87 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('memberGrowthChart');
+    if (!ctx) return;
+
+    const labels = {!! json_encode(array_column($monthlyData, 'label')) !!};
+    const dataValues = {!! json_encode(array_column($monthlyData, 'count')) !!};
+
+    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 240);
+    gradient.addColorStop(0, '#ff6f4d');
+    gradient.addColorStop(1, '#ff5722');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Member Baru',
+                data: dataValues,
+                backgroundColor: gradient,
+                hoverBackgroundColor: '#e13b12',
+                borderRadius: 10,
+                borderSkipped: false,
+                barThickness: 38,
+                maxBarThickness: 48,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: '#0f1418',
+                    titleFont: { family: 'Montserrat', size: 12, weight: '700' },
+                    bodyFont: { family: 'Inter', size: 12, weight: '500' },
+                    padding: 12,
+                    cornerRadius: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function (context) {
+                            return ' ' + context.parsed.y + ' Member Baru';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#64748b',
+                        font: { family: 'Montserrat', size: 11, weight: '700' }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: Math.max(...dataValues, 5),
+                    grid: {
+                        color: 'rgba(226, 232, 240, 0.7)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0,
+                        color: '#94a3b8',
+                        font: { family: 'Inter', size: 11, weight: '600' },
+                        padding: 8
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+@endpush
+

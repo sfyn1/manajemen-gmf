@@ -690,9 +690,9 @@
     "semantic_hash": ""
   },
   "resources/views/admin/dashboard.blade.php": {
-    "mtime": 1784966149.110684,
-    "ast_hash": "e80758937f166137f85741899635b55d",
-    "semantic_hash": "e80758937f166137f85741899635b55d"
+    "mtime": 1787198516.5821238,
+    "ast_hash": "91f2784a12d1cb6a5959a39129d0e1ba",
+    "semantic_hash": ""
   },
   "resources/views/admin/landing-content/index.blade.php": {
     "mtime": 1785388942.5385292,
@@ -785,29 +785,29 @@
     "semantic_hash": "03a12ecb2cc4aefb95654d8d51dff5a8"
   },
   "resources/views/coach/attendance/index.blade.php": {
-    "mtime": 1784881333.449818,
-    "ast_hash": "8c8981fe0bf10c98d121223cf054dcf5",
-    "semantic_hash": "8c8981fe0bf10c98d121223cf054dcf5"
+    "mtime": 1787198992.6388693,
+    "ast_hash": "c95607cd4100c9c58644915e74932c5c",
+    "semantic_hash": ""
   },
   "resources/views/coach/commission/index.blade.php": {
-    "mtime": 1784966336.908676,
-    "ast_hash": "d34f7918e2e303cbdf459140272a9215",
-    "semantic_hash": "d34f7918e2e303cbdf459140272a9215"
+    "mtime": 1787199016.2671156,
+    "ast_hash": "275e361e5f2cf3806ab2bce5cdcf218e",
+    "semantic_hash": ""
   },
   "resources/views/coach/dashboard.blade.php": {
-    "mtime": 1785900591.16388,
-    "ast_hash": "f12243da622588724df73a23ea039f3d",
+    "mtime": 1787198521.8795998,
+    "ast_hash": "c106797a170e8fc5012bd390bed33a48",
     "semantic_hash": ""
   },
   "resources/views/coach/history/index.blade.php": {
-    "mtime": 1784788843.2207506,
-    "ast_hash": "2477768bb9c21ef2ae6ebb4e55ebcd17",
-    "semantic_hash": "2477768bb9c21ef2ae6ebb4e55ebcd17"
+    "mtime": 1787199000.4085455,
+    "ast_hash": "3866c45a57a6d7bbdc904cd64583eee0",
+    "semantic_hash": ""
   },
   "resources/views/coach/roster/show.blade.php": {
-    "mtime": 1784729780.2710993,
-    "ast_hash": "be0f91de70b4a7d949f5f768c9d24fd3",
-    "semantic_hash": "be0f91de70b4a7d949f5f768c9d24fd3"
+    "mtime": 1787199033.9462078,
+    "ast_hash": "6f0a48add22c4f9ba80d11d6c798f9b5",
+    "semantic_hash": ""
   },
   "resources/views/emails/member-approved.blade.php": {
     "mtime": 1784796528.1207783,
@@ -830,14 +830,14 @@
     "semantic_hash": "6cd11b340cc7de08eddb9a8ed5bcfff5"
   },
   "resources/views/layouts/admin.blade.php": {
-    "mtime": 1784961741.0488906,
-    "ast_hash": "0feca91f43e903d8dfd0100b7bda67c1",
-    "semantic_hash": "0feca91f43e903d8dfd0100b7bda67c1"
+    "mtime": 1787197878.011095,
+    "ast_hash": "e83ce54bf6cd48a749f4d3e6f62ca7a3",
+    "semantic_hash": ""
   },
   "resources/views/layouts/coach.blade.php": {
-    "mtime": 1784965532.4785085,
-    "ast_hash": "c2122768ba3100f76d251e0e2b6fc18a",
-    "semantic_hash": "c2122768ba3100f76d251e0e2b6fc18a"
+    "mtime": 1787199161.1031287,
+    "ast_hash": "eec0359312537a0940f07f7e76b872e9",
+    "semantic_hash": ""
   },
   "resources/views/layouts/guest.blade.php": {
     "mtime": 1784796360.8374395,
@@ -845,14 +845,14 @@
     "semantic_hash": "035d44a3a6fec86977388d15d660f6f3"
   },
   "resources/views/layouts/member.blade.php": {
-    "mtime": 1784961819.450433,
-    "ast_hash": "42e037ae0c82b04e8f17cac5fe251e19",
-    "semantic_hash": "42e037ae0c82b04e8f17cac5fe251e19"
+    "mtime": 1787197933.9674673,
+    "ast_hash": "3a2b4d34964d26c441274a93e89c032d",
+    "semantic_hash": ""
   },
   "resources/views/layouts/owner.blade.php": {
-    "mtime": 1784961776.5352662,
-    "ast_hash": "87cbe8609e7ca3f04888b541383f3656",
-    "semantic_hash": "87cbe8609e7ca3f04888b541383f3656"
+    "mtime": 1787197893.967645,
+    "ast_hash": "3758a2af3b80b070c6e72cd245fac898",
+    "semantic_hash": ""
   },
   "resources/views/member/booking/index.blade.php": {
     "mtime": 1785897626.9094398,
@@ -865,8 +865,8 @@
     "semantic_hash": "a04934e889c31819db1b3cc02b1f4035"
   },
   "resources/views/member/dashboard.blade.php": {
-    "mtime": 1785897631.3755262,
-    "ast_hash": "2d11ef7d0e71a1408eba37080bc9090c",
+    "mtime": 1787198510.6931412,
+    "ast_hash": "72cf28edaa3f39683714d434a6027eb3",
     "semantic_hash": ""
   },
   "resources/views/member/invoice/index.blade.php": {
@@ -910,9 +910,9 @@
     "semantic_hash": "d8debca6640d47f329a131481fc37136"
   },
   "resources/views/owner/dashboard.blade.php": {
-    "mtime": 1784967748.7495449,
-    "ast_hash": "dcac4d8072b8a0e32b91ffb322db3d79",
-    "semantic_hash": "dcac4d8072b8a0e32b91ffb322db3d79"
+    "mtime": 1787202217.8279622,
+    "ast_hash": "22597ba08ed64374fda692efb8f98ddc",
+    "semantic_hash": ""
   },
   "resources/views/owner/reports/index.blade.php": {
     "mtime": 1784796496.4530704,
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "resources/views/welcome.blade.php": {
-    "mtime": 1785388964.826809,
-    "ast_hash": "aebb1593fe8bda55bc414ce1c3784a7d",
+    "mtime": 1786183988.6999655,
+    "ast_hash": "a5d692dbe5b89b8b7e02811dfda82412",
     "semantic_hash": ""
   },
   "routes/admin.php": {

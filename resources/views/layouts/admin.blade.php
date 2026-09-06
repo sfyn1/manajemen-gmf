@@ -6,43 +6,43 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Panel') — Gintung Master Fitness</title>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts & Material Symbols (Stitch Kinetic Performance Core) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/echo.js'])
     @stack('styles')
 </head>
-<body class="antialiased bg-slate-50 font-sans text-slate-800" x-data="{ sidebarOpen: window.innerWidth >= 1024 }">
+<body class="antialiased bg-[#f8f9fa] font-sans text-[#191c1d]" x-data="{ sidebarOpen: window.innerWidth >= 1024 }">
 
-    <div class="flex h-screen overflow-hidden bg-slate-100">
+    <div class="flex h-screen overflow-hidden bg-[#f3f4f5]">
 
         {{-- ── SIDEBAR ───────────────────────────────────────────────────── --}}
         <aside
-            class="fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out bg-slate-900 border-r border-slate-800"
+            class="fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out bg-[#0f1418] border-r border-[#262c33]"
             :class="sidebarOpen ? 'w-64' : 'w-20'">
 
             {{-- Brand Header --}}
-            <div class="flex items-center gap-3 px-4 h-16 border-b border-slate-800 shrink-0">
+            <div class="flex items-center gap-3 px-4 h-20 border-b border-[#262c33]/70 shrink-0">
                 @if(file_exists(public_path('images/gmf.png')))
-                    <img src="{{ asset('images/gmf.png') }}" alt="GMF Logo" class="w-9 h-9 object-contain shrink-0">
+                    <img src="{{ asset('images/gmf.png') }}" alt="GMF Logo" class="w-10 h-10 object-contain shrink-0">
                 @else
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#e13b12] to-[#f05a2a] flex items-center justify-center text-white font-black text-xs shrink-0 shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#e13b12] to-[#ff5722] flex items-center justify-center text-white font-black text-sm shrink-0 shadow-lg shadow-[#ff5722]/30">
                         GMF
                     </div>
                 @endif
                 <div x-show="sidebarOpen" x-transition.opacity class="overflow-hidden whitespace-nowrap">
-                    <p class="text-white font-extrabold font-display text-sm tracking-tight leading-none">Gintung Master Fitness</p>
-                    <div class="flex items-center gap-1.5 mt-1">
-                    </div>
+                    <p class="text-white font-extrabold font-display text-sm tracking-tight leading-none uppercase">Gintung Master</p>
+                    <p class="text-[#ff5722] text-[10px] font-bold tracking-widest uppercase mt-1">Console System</p>
                 </div>
             </div>
 
             {{-- Navigation Items --}}
-            <nav class="flex-1 overflow-y-auto scrollbar-thin py-4 space-y-1 px-3">
+            <nav class="flex-1 overflow-y-auto scrollbar-thin py-4 space-y-1.5 px-3">
                 @php
                     $navItems = [
                         ['route' => 'admin.dashboard',         'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'label' => 'Dashboard'],
@@ -61,8 +61,8 @@
                 @foreach($navItems as $item)
                 @php $isActive = request()->routeIs(rtrim($item['route'], '.index') . '*'); @endphp
                 <a href="{{ route($item['route']) }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
-                    {{ $isActive ? 'bg-[#f05a2a] text-white shadow-md shadow-[#f05a2a]/20 font-semibold' : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-200' }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 group relative
+                    {{ $isActive ? 'bg-[#ff5722] text-white shadow-lg shadow-[#ff5722]/30 font-semibold' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}"
                     title="{{ $item['label'] }}">
 
                     <svg class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,11 +75,11 @@
 
                     {{-- Badge Notifikasi --}}
                     @if(isset($item['badge']) && $item['badge'] > 0)
-                    <span class="ml-auto shrink-0 min-w-[20px] h-5 px-1.5 bg-[#e13b12] text-white text-[11px] font-bold rounded-full flex items-center justify-center"
+                    <span class="ml-auto shrink-0 min-w-[20px] h-5 px-1.5 bg-[#e13b12] text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-sm"
                         x-show="sidebarOpen">
                         {{ $item['badge'] }}
                     </span>
-                    <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#e13b12] rounded-full ring-2 ring-slate-900"
+                    <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#ff5722] rounded-full ring-2 ring-[#0f1418]"
                         x-show="!sidebarOpen">
                     </span>
                     @endif
@@ -88,18 +88,18 @@
             </nav>
 
             {{-- Bottom User Profile & Logout --}}
-            <div class="border-t border-slate-800 p-3 shrink-0 bg-slate-950/40">
+            <div class="border-t border-[#262c33]/70 p-3 shrink-0 bg-[#0a0d10]">
                 <div class="flex items-center gap-3" x-show="sidebarOpen" x-transition.opacity>
-                    <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-[#f05a2a] font-bold text-sm shrink-0">
+                    <div class="w-9 h-9 rounded-xl bg-[#ff5722]/20 border border-[#ff5722]/40 flex items-center justify-center text-[#ff5722] font-bold text-sm shrink-0">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-slate-200 text-xs font-semibold truncate">{{ auth()->user()->name }}</p>
-                        <p class="text-slate-500 text-[11px] truncate">Administrator</p>
+                        <p class="text-white text-xs font-semibold truncate">{{ auth()->user()->name }}</p>
+                        <p class="text-[#ff5722] text-[10px] uppercase font-bold tracking-wider truncate">Master Admin</p>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors" title="Keluar dari Sistem">
+                        <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-white/5 rounded-lg transition-colors" title="Keluar dari Sistem">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
@@ -108,7 +108,7 @@
                 </div>
                 <form method="POST" action="{{ route('logout') }}" x-show="!sidebarOpen" class="flex justify-center">
                     @csrf
-                    <button type="submit" class="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors" title="Keluar">
+                    <button type="submit" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-white/5 rounded-lg transition-colors" title="Keluar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
@@ -118,7 +118,7 @@
 
             {{-- Sidebar Toggle Button --}}
             <button @click="sidebarOpen = !sidebarOpen"
-                class="absolute -right-3 top-20 w-6 h-6 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-[#f05a2a] transition-all shadow-md z-10">
+                class="absolute -right-3 top-20 w-6 h-6 bg-[#0f1418] border border-[#262c33] rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-[#ff5722] hover:border-[#ff5722] transition-all shadow-md z-10">
                 <svg class="w-3.5 h-3.5 transition-transform duration-300" :class="sidebarOpen ? '' : 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -141,13 +141,13 @@
             :class="sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'">
 
             {{-- Topbar --}}
-            <header class="h-16 bg-white border-b border-slate-200/80 flex items-center justify-between px-4 sm:px-6 shrink-0 shadow-sm z-30">
-                <div class="flex items-center gap-3">
+            <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 sm:px-8 shrink-0 shadow-sm z-30">
+                <div class="flex items-center gap-4">
                     <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 rounded-xl hover:bg-slate-100 text-slate-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <div>
-                        <h1 class="text-base font-bold text-slate-900 font-display leading-tight">@yield('page-title', 'Dashboard Admin')</h1>
+                        <h1 class="text-base sm:text-lg font-extrabold text-slate-900 font-display leading-tight">@yield('page-title', 'Performance Console')</h1>
                         <p class="text-xs text-slate-500 font-medium">@yield('page-subtitle', 'Gintung Master Fitness Center')</p>
                     </div>
                 </div>

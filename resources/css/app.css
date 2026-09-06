@@ -6,32 +6,38 @@
 
 @theme {
     /* ── Typography ────────────────────────────────────────────── */
-    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-display: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* ── Brand Colors — Gintung Master Fitness (GMF Logo Matching) ──────── */
+    /* ── Brand Colors — Stitch Kinetic Performance Core ───────── */
     --color-gmf-50:  #fff5f2;
     --color-gmf-100: #ffe6de;
     --color-gmf-200: #ffcfc2;
     --color-gmf-300: #ffa691;
     --color-gmf-400: #ff6f4d;
-    --color-gmf-500: #f05a2a;   /* Logo Primary Vivid Orange-Red */
-    --color-gmf-600: #e13b12;   /* Logo Deep Crimson Primary Accent */
-    --color-gmf-700: #b92909;
-    --color-gmf-800: #93240d;
-    --color-gmf-900: #77210e;
-    --color-gmf-950: #420d04;
+    --color-gmf-500: #ff5722;   /* Kinetic Action Orange */
+    --color-gmf-600: #e13b12;   /* Deep Crimson Accent */
+    --color-gmf-700: #b02f00;   /* Primary Dark */
+    --color-gmf-800: #862200;
+    --color-gmf-900: #541200;
+    --color-gmf-950: #3b0900;
 
-    /* ── Unified Role Theme Colors (GMF Ecosystem) ─────────────── */
-    --color-admin-sidebar:  #0f172a;   /* Slate 900 */
-    --color-coach-sidebar:  #091e14;   /* Deep Emerald Dark */
-    --color-member-sidebar: #180d2a;   /* Deep Midnight Purple */
-    --color-owner-sidebar:  #0a0a0c;   /* Onyx Black */
+    /* ── Kinetic Surface Tokens ────────────────────────────────── */
+    --color-surface-bg:        #f8f9fa;
+    --color-surface-card:      #ffffff;
+    --color-surface-container: #edeeef;
+    --color-surface-low:       #f3f4f5;
+    --color-surface-high:      #e7e8e9;
+    --color-surface-highest:   #e1e3e4;
+    --color-on-surface:        #191c1d;
+    --color-on-surface-muted:  #5f6368;
+    --color-outline-variant:   #e4beb4;
 
-    /* ── Neutral Dark & Light Surfaces ─────────────────────────── */
-    --color-surface-dark:   #0a0a0c;
-    --color-surface-card:   #12141c;
-    --color-border-dark:    #262938;
+    /* ── Unified Role Theme Colors ─────────────────────────────── */
+    --color-admin-sidebar:  #0f172a;
+    --color-coach-sidebar:  #091e14;
+    --color-member-sidebar: #12141c;
+    --color-owner-sidebar:  #0a0a0c;
 }
 
 /* ── Base Styles ─────────────────────────────────────────────── */
@@ -48,20 +54,20 @@
 
     body {
         font-family: var(--font-sans);
-        background-color: #f8fafc;
-        color: #0f172a;
+        background-color: #f8f9fa;
+        color: #191c1d;
     }
 
     h1, h2, h3, h4, h5, h6 {
         font-family: var(--font-display);
         font-weight: 700;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.015em;
     }
 
     :focus-visible {
         outline: 2px solid var(--color-gmf-500);
         outline-offset: 2px;
-        border-radius: 6px;
+        border-radius: 8px;
     }
 }
 
@@ -76,47 +82,62 @@
         scrollbar-color: #334155 transparent;
     }
 
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 1;
+    }
+
+    .material-symbols-outlined.filled {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
     .glass-card {
-        background: rgba(255, 255, 255, 0.75);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(226, 232, 240, 0.8);
+        border: 1px solid rgba(226, 232, 240, 0.9);
     }
 
     .glass-dark {
-        background: rgba(18, 20, 28, 0.85);
+        background: rgba(18, 20, 28, 0.9);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .gmf-gradient-text {
-        background: linear-gradient(135deg, #ffffff 40%, #f05a2a 100%);
+        background: linear-gradient(135deg, #191c1d 30%, #ff5722 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
     .gmf-gradient-btn {
-        background: linear-gradient(135deg, #f05a2a 0%, #e13b12 100%);
-        box-shadow: 0 4px 14px rgba(240, 90, 42, 0.35);
+        background-color: #ff5722 !important;
+        background-image: linear-gradient(135deg, #ff5722 0%, #e13b12 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px rgba(255, 87, 34, 0.35) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .gmf-gradient-btn:hover {
-        background: linear-gradient(135deg, #ff6f4d 0%, #f05a2a 100%);
-        box-shadow: 0 6px 20px rgba(240, 90, 42, 0.45);
+        background-image: linear-gradient(135deg, #ff6f4d 0%, #ff5722 100%) !important;
+        box-shadow: 0 6px 20px rgba(255, 87, 34, 0.45) !important;
         transform: translateY(-1px);
     }
 
-    .gmf-card-hover {
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+    .bento-card {
+        background: #ffffff;
+        border: 1px solid rgba(228, 190, 180, 0.35);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .gmf-card-hover:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.08), 0 8px 16px -8px rgba(240, 90, 42, 0.12);
-        border-color: rgba(240, 90, 42, 0.3);
+    .bento-card:hover {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 16px -6px rgba(255, 87, 34, 0.1);
+        border-color: rgba(255, 87, 34, 0.35);
     }
 
     .animate-fadeIn {
@@ -135,6 +156,7 @@
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
 }
+
