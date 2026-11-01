@@ -23,6 +23,8 @@ class RosterController extends Controller
         // Ambil booking untuk jadwal+tanggal ini
         $bookings = ClassBooking::where('class_schedule_id', $schedule->id)
             ->where('booking_date', $parsedDate->toDateString())
+            ->whereIn('status', [ClassBooking::STATUS_BOOKED, ClassBooking::STATUS_ATTENDED])
+            ->where('payment_status', 'settlement')
             ->with('member')
             ->get();
 

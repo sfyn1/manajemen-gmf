@@ -144,7 +144,7 @@
                             </span>
                             @endif
                         </div>
-                        <p class="text-xs text-slate-500 font-medium">{{ \Carbon\Carbon::parse($b->booking_date)->format('l, d M Y') }} • {{ \Carbon\Carbon::parse($b->schedule->start_time)->format('H:i') }} WIB</p>
+                        <p class="text-xs text-slate-500 font-medium">{{ \Carbon\Carbon::parse($b->booking_date)->locale('id')->translatedFormat('l, d M Y') }} • {{ \Carbon\Carbon::parse($b->schedule->start_time)->format('H:i') }}-{{ \Carbon\Carbon::parse($b->schedule->end_time)->format('H:i') }} WIB</p>
                         <p class="text-[11px] text-slate-400">Pelatih: {{ $b->schedule->coach->user->name }} • Biaya: Rp {{ number_format($b->payment_amount, 0, ',', '.') }}</p>
                     </div>
                 </div>
@@ -157,6 +157,7 @@
                     </button>
                     @endif
 
+                    @if($b->isCancellable())
                     <form method="POST" action="{{ route('member.booking.cancel', $b) }}">
                         @csrf
                         @method('DELETE')
@@ -165,6 +166,11 @@
                             Batalkan Reservasi
                         </button>
                     </form>
+                    @else
+                    <span class="px-4 py-2 bg-slate-100 text-slate-500 text-xs font-semibold rounded-xl" title="Pembatalan ditutup pada hari-H">
+                        Pembatalan Ditutup
+                    </span>
+                    @endif
                 </div>
             </div>
             @empty
@@ -217,14 +223,19 @@
                 onSuccess: function (result) {
                     confirmBookingPayment(result && result.order_id ? result.order_id : orderId);
                 },
-                onPending: function (result) {
-                    confirmBookingPayment(result && result.order_id ? result.order_id : orderId);
+                onPending: function () {
+                    // Pending bukan berarti lunas. Biarkan status tetap pending
+                    // sampai webhook/status Midtrans mengonfirmasi settlement.
+                    alert("Pembayaran masih menunggu. Anda dapat melanjutkannya nanti dari halaman ini.");
+                    window.location.reload();
                 },
-                onError: function (result) {
-                    alert("Pembayaran terganggu atau dibatalkan.");
+                onError: function () {
+                    alert("Pembayaran terganggu atau dibatalkan. Status booking tetap belum lunas.");
                 },
                 onClose: function () {
-                    confirmBookingPayment(orderId);
+                    // Menutup popup tidak boleh mengubah status pembayaran.
+                    // Member dapat top up saldo lalu membayar kembali nanti.
+                    window.location.reload();
                 }
             });
         } else {

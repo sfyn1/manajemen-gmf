@@ -157,7 +157,7 @@
                             <p class="text-sm font-bold text-slate-900 font-display">{{ $s->classType->name }}</p>
                             <p class="text-slate-500 font-medium text-xs mt-0.5 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[#ff5722] text-[14px]">schedule</span>
-                                <span>{{ $s->next_date_label ?? \App\Models\ClassSchedule::DAYS[$s->day_of_week] }} • {{ \Carbon\Carbon::parse($s->start_time)->format('H:i') }} WIB</span>
+                                <span>{{ \Carbon\Carbon::parse($s->next_date)->locale('id')->translatedFormat('l, d M Y') }} • {{ \Carbon\Carbon::parse($s->start_time)->format('H:i') }}-{{ \Carbon\Carbon::parse($s->end_time)->format('H:i') }} WIB</span>
                             </p>
                         </div>
                         <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 font-bold text-xs">

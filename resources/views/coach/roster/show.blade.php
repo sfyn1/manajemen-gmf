@@ -17,7 +17,7 @@
                 <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 font-display tracking-tight">{{ $schedule->classType->name }}</h2>
                 <p class="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[#ff5722] text-[16px]">schedule</span>
-                    <span>{{ $parsedDate->translatedFormat('l, d F Y') }} • {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} – {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }} WIB</span>
+                    <span>{{ $parsedDate->locale('id')->translatedFormat('l, d M Y') }} • {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}-{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }} WIB</span>
                 </p>
             </div>
             <div class="flex gap-3 w-full sm:w-auto">

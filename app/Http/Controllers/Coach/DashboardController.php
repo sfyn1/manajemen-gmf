@@ -70,6 +70,7 @@ class DashboardController extends Controller
                 $schedule->bookings = ClassBooking::where('class_schedule_id', $schedule->id)
                     ->where('booking_date', $nextDate)
                     ->whereIn('status', ['booked', 'attended'])
+                    ->where('payment_status', 'settlement')
                     ->with('member')
                     ->get();
 

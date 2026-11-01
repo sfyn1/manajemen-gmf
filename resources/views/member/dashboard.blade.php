@@ -334,10 +334,16 @@
                     <p class="text-sm font-bold text-slate-900 font-display">{{ $b->schedule->classType->name }}</p>
                     <p class="text-xs text-slate-500 font-medium mt-0.5 flex items-center gap-1">
                         <span class="material-symbols-outlined text-[#ff5722] text-[14px]">schedule</span>
-                        <span>{{ \Carbon\Carbon::parse($b->booking_date)->format('l, d M Y') }} • {{ \Carbon\Carbon::parse($b->schedule->start_time)->format('H:i') }} WIB</span>
+                        <span>{{ \Carbon\Carbon::parse($b->booking_date)->locale('id')->translatedFormat('l, d M Y') }} • {{ \Carbon\Carbon::parse($b->schedule->start_time)->format('H:i') }}-{{ \Carbon\Carbon::parse($b->schedule->end_time)->format('H:i') }} WIB</span>
                     </p>
                     <p class="text-[11px] text-slate-400 mt-0.5">Pelatih: {{ $b->schedule->coach->user->name }}</p>
                 </div>
+                @if($b->payment_status !== 'settlement')
+                <a href="{{ route('member.booking.index') }}"
+                    class="px-3.5 py-1.5 text-xs font-bold text-white bg-[#ff5722] rounded-xl hover:bg-[#e13b12] transition-colors">
+                    Bayar Sekarang →
+                </a>
+                @elseif($b->isCancellable())
                 <form method="POST" action="{{ route('member.booking.cancel', $b) }}">
                     @csrf
                     @method('DELETE')
@@ -346,6 +352,11 @@
                         Batalkan
                     </button>
                 </form>
+                @else
+                <span class="px-3.5 py-1.5 text-xs font-bold text-slate-500 bg-slate-100 rounded-xl" title="Pembatalan ditutup pada hari-H">
+                    Pembatalan Ditutup
+                </span>
+                @endif
             </div>
             @endforeach
         </div>

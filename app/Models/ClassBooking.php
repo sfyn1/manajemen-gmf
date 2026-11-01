@@ -41,12 +41,55 @@ class ClassBooking extends Model
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     /**
-     * Cek apakah booking masih bisa dibatalkan (sebelum tanggal kelas berlalu)
+     * SOP pembatalan: hanya boleh sampai sebelum pukul 00:00 pada tanggal kelas.
+     * Begitu masuk hari-H (WIB), pembatalan ditutup, termasuk setelah kelas selesai.
      */
+    public function cancellationCutoff(): \Carbon\Carbon
+    {
+        return $this->booking_date->copy()->startOfDay();
+    }
+
     public function isCancellable(): bool
     {
         return $this->status === self::STATUS_BOOKED
-            && $this->booking_date->gte(now()->startOfDay());
+            && now()->lt($this->cancellationCutoff());
+    }
+
+    /**
+     * Waktu selesai sesi berdasarkan tanggal booking dan jadwal kelas.
+     */
+    public function sessionEndAt(): ?\Carbon\Carbon
+    {
+        if (! $this->booking_date || ! $this->relationLoaded('schedule') && ! $this->schedule) {
+            return null;
+        }
+
+        $endTime = $this->schedule?->end_time ?: $this->schedule?->start_time;
+        return $endTime
+            ? \Carbon\Carbon::parse($this->booking_date->format('Y-m-d') . ' ' . $endTime)
+            : null;
+    }
+
+    /**
+     * Booking yang belum dibatalkan otomatis selesai setelah jam kelas berakhir.
+     * Hanya status booked yang boleh diubah agar status cancelled tidak berubah.
+     */
+    public static function markCompletedSessions(): int
+    {
+        $updated = 0;
+        static::where('status', self::STATUS_BOOKED)
+            ->with('schedule')
+            ->where('booking_date', '<=', now()->toDateString())
+            ->get()
+            ->each(function (self $booking) use (&$updated) {
+                $end = $booking->sessionEndAt();
+                if ($end && now()->gte($end)) {
+                    $booking->update(['status' => self::STATUS_ATTENDED]);
+                    $updated++;
+                }
+            });
+
+        return $updated;
     }
 
     // ── Scopes ────────────────────────────────────────────────────────────────

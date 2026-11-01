@@ -28,6 +28,9 @@ class GenerateVerifications extends Command
      */
     public function handle()
     {
+        AttendanceVerification::syncFromBookings();
+        $expired = AttendanceVerification::expireOverdue();
+
         $this->info('Mulai generate verifikasi kehadiran...');
 
         $today = Carbon::today();
@@ -65,6 +68,6 @@ class GenerateVerifications extends Command
             ]);
 
         $this->info("Berhasil membuat {$count} record verifikasi baru untuk hari ini.");
-        $this->info("Menandai {$expired} record kemarin sebagai auto-failed.");
+        $this->info("Menandai {$expired} record yang melewati deadline sebagai auto-failed.");
     }
 }

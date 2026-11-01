@@ -49,6 +49,7 @@ class ClassBookingController extends Controller
     public function book(Request $request, ClassSchedule $schedule, MidtransService $midtransService)
     {
         $member = auth()->user()->member;
+        ClassBooking::markCompletedSessions();
 
         // Hanya member bulanan yang bisa booking
         if (! $member->isMonthlyMember()) {
@@ -141,40 +142,60 @@ class ClassBookingController extends Controller
         return back()->with('success', "Berhasil booking kelas {$schedule->classType->name}!");
     }
 
-    public function confirmSuccess(Request $request)
+    public function confirmSuccess(Request $request, MidtransService $midtransService)
     {
-        $user = auth()->user();
-        $member = $user?->member;
+        $member = auth()->user()?->member;
 
         if (! $member) {
             return response()->json(['status' => 'error', 'message' => 'Member not found'], 404);
         }
 
         $orderId = $request->input('order_id');
-        $booking = ClassBooking::where('member_id', $member->id)
-            ->where(function ($q) use ($orderId) {
-                if ($orderId) {
-                    $q->where('order_id', $orderId);
-                } else {
-                    $q->where('payment_status', 'pending');
-                }
-            })
-            ->latest()
-            ->first();
-
-        if ($booking) {
-            $booking->update([
-                'payment_status'    => 'settlement',
-                'payment_confirmed' => true,
-            ]);
-
-            return response()->json([
-                'status'  => 'success',
-                'message' => 'Pembayaran booking kelas berhasil dikonfirmasi lunas.'
-            ]);
+        if (! is_string($orderId) || $orderId === '') {
+            return response()->json(['status' => 'error', 'message' => 'Order ID wajib diisi'], 422);
         }
 
-        return response()->json(['status' => 'ignored']);
+        // Jangan pernah mempercayai callback browser sebagai bukti pembayaran.
+        // Verifikasi langsung ke Midtrans sebelum mengubah status menjadi settlement.
+        $booking = ClassBooking::where('member_id', $member->id)
+            ->where('order_id', $orderId)
+            ->where('payment_status', 'pending')
+            ->first();
+
+        if (! $booking) {
+            return response()->json(['status' => 'ignored']);
+        }
+
+        $transaction = $midtransService->getStatus($orderId);
+        $transactionStatus = is_object($transaction)
+            ? ($transaction->transaction_status ?? null)
+            : ($transaction['transaction_status'] ?? null);
+        $fraudStatus = is_object($transaction)
+            ? ($transaction->fraud_status ?? null)
+            : ($transaction['fraud_status'] ?? null);
+
+        $isSettled = $transactionStatus === 'settlement'
+            || ($transactionStatus === 'capture' && $fraudStatus === 'accept');
+
+        if (! $isSettled) {
+            return response()->json([
+                'status' => 'pending',
+                'message' => 'Pembayaran belum terkonfirmasi oleh Midtrans.'
+            ], 202);
+        }
+
+        $booking->update([
+            'payment_status'    => 'settlement',
+            'payment_confirmed' => true,
+            'payment_type'      => is_object($transaction)
+                ? ($transaction->payment_type ?? $booking->payment_type)
+                : ($transaction['payment_type'] ?? $booking->payment_type),
+        ]);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Pembayaran booking kelas berhasil dikonfirmasi lunas.'
+        ]);
     }
 
     public function cancel(ClassBooking $booking, MidtransService $midtransService)
@@ -186,7 +207,7 @@ class ClassBookingController extends Controller
         }
 
         if (! $booking->isCancellable()) {
-            return back()->with('error', 'Booking tidak dapat dibatalkan (sudah lewat atau bukan status booked).');
+            return back()->with('error', 'Pembatalan hanya dapat dilakukan sebelum pukul 00:00 pada H-1 sebelum tanggal kelas.');
         }
 
         $refundMsg = '';

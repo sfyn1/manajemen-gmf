@@ -144,7 +144,22 @@ class ApprovalCenterController extends Controller
 
     public function approveVerification(AttendanceVerification $verification)
     {
-        $rate = $verification->coach?->rate_per_session ?: ($verification->schedule?->session_fee ?? 100000);
+        // Validasi ulang aturan SOP di endpoint approval. Jangan hanya mengandalkan
+        // record yang tampil di Approval Center karena endpoint dapat dipanggil langsung.
+        $deadline = $verification->effective_deadline;
+        $isValidSubmission = $verification->status === AttendanceVerification::STATUS_PENDING
+            && $verification->submitted_at !== null
+            && $deadline !== null
+            && $verification->submitted_at->lt($deadline);
+
+        if (!$isValidSubmission) {
+            return redirect()->route('admin.approval.index')
+                ->with('error', 'Verifikasi tidak dapat disetujui: bukti tidak valid, belum diunggah, sudah auto-gagal, atau diunggah setelah batas waktu SOP.');
+        }
+
+        $rate = $verification->commission_amount > 0
+            ? $verification->commission_amount
+            : ($verification->coach?->rate_per_session ?: ($verification->schedule?->session_fee ?? 100000));
 
         $verification->update([
             'status'            => AttendanceVerification::STATUS_APPROVED,

@@ -63,7 +63,7 @@
 </header>
 
 {{-- MAIN CONTENT AREA --}}
-<main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 pb-36 sm:pb-44">
+<main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8" style="padding-bottom: calc(9rem + env(safe-area-inset-bottom));">
     @if(session('success'))
     <div x-data="{show:true}" x-show="show" x-init="setTimeout(()=>show=false,5000)"
         class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3 animate-slideUp shadow-sm">
@@ -92,7 +92,7 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100 transform translate-y-0"
      x-transition:leave-end="opacity-0 transform translate-y-6"
-     class="fixed bottom-4 inset-x-4 max-w-lg mx-auto z-40">
+     class="fixed inset-x-4 max-w-lg mx-auto z-40" style="bottom: max(1rem, env(safe-area-inset-bottom));">
     <nav class="bg-[#0f1418]/95 backdrop-blur-xl border border-[#262c33] text-white rounded-3xl px-2.5 py-2 shadow-2xl shadow-black/60 flex items-center justify-between">
         @php
         $navItems = [

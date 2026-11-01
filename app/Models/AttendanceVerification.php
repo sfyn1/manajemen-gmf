@@ -21,6 +21,7 @@ class AttendanceVerification extends Model
         'reviewed_at',
         'reviewed_by',
         'rejection_reason',
+        'coach_notes',
         'commission_paid',
         'commission_amount',
     ];
@@ -36,6 +37,7 @@ class AttendanceVerification extends Model
 
     /**
      * Otomatis sinkronisasi & buat tugas presensi AttendanceVerification untuk sesi kelas yang sudah lewat / hari ini
+     * Sekaligus memeriksa deadline 1 jam setelah jam kelas selesai.
      */
     public static function syncFromBookings()
     {
@@ -44,7 +46,8 @@ class AttendanceVerification extends Model
         // 1. Sync berdasarkan ClassBooking yang ada di database
         $pastBookings = ClassBooking::where('booking_date', '<=', $todayStr)
             ->whereIn('status', [ClassBooking::STATUS_BOOKED, ClassBooking::STATUS_ATTENDED])
-            ->with('schedule')
+            ->where('payment_status', 'settlement')
+            ->with('schedule.coach')
             ->get();
 
         foreach ($pastBookings as $booking) {
@@ -52,19 +55,25 @@ class AttendanceVerification extends Model
             if (!$schedule || !$schedule->coach_id) continue;
 
             $dateStr = $booking->booking_date->format('Y-m-d');
-
             $commissionAmount = $schedule->coach?->rate_per_session ?: $schedule->session_fee;
 
-            static::firstOrCreate([
+            $deadline = self::deadlineFor($dateStr, $schedule->end_time);
+
+            $verification = static::firstOrCreate([
                 'coach_id'          => $schedule->coach_id,
                 'class_schedule_id' => $schedule->id,
                 'session_date'      => $dateStr,
             ], [
                 'status'            => self::STATUS_PENDING,
                 'submitted_at'      => null,
-                'deadline_at'       => Carbon::parse($dateStr)->addDays(3),
+                'deadline_at'       => $deadline,
                 'commission_amount' => $commissionAmount,
             ]);
+
+            // Koreksi deadline record lama yang sebelumnya masih memakai aturan lama.
+            if ($verification->deadline_at?->ne($deadline)) {
+                $verification->update(['deadline_at' => $deadline]);
+            }
         }
 
         // 2. Sync berdasarkan ClassSchedule aktif yang hari pengajarannya sudah pernah lewat dalam 14 hari terakhir
@@ -79,25 +88,58 @@ class AttendanceVerification extends Model
                     $hasBookings = ClassBooking::where('class_schedule_id', $schedule->id)
                         ->where('booking_date', $checkDateStr)
                         ->whereIn('status', [ClassBooking::STATUS_BOOKED, ClassBooking::STATUS_ATTENDED])
+                        ->where('payment_status', 'settlement')
                         ->exists();
 
                     if ($hasBookings) {
                         $commissionAmount = $schedule->coach?->rate_per_session ?: $schedule->session_fee;
+                        $deadline = self::deadlineFor($checkDateStr, $schedule->end_time);
 
-                        static::firstOrCreate([
+                        $verification = static::firstOrCreate([
                             'coach_id'          => $schedule->coach_id,
                             'class_schedule_id' => $schedule->id,
                             'session_date'      => $checkDateStr,
                         ], [
                             'status'            => self::STATUS_PENDING,
                             'submitted_at'      => null,
-                            'deadline_at'       => $checkDate->copy()->addDays(3),
+                            'deadline_at'       => $deadline,
                             'commission_amount' => $commissionAmount,
                         ]);
+
+                        // Koreksi deadline record lama yang sebelumnya masih memakai aturan lama.
+                        if ($verification->deadline_at?->ne($deadline)) {
+                            $verification->update(['deadline_at' => $deadline]);
+                        }
                     }
                 }
             }
         }
+
+        // 3. Auto-fail records yang tidak disubmit sampai deadline SOP.
+        static::expireOverdue();
+    }
+
+    /**
+     * Menjalankan auto-fail untuk presensi yang tidak dikirim sampai deadline SOP.
+     */
+    public static function expireOverdue(): int
+    {
+        return static::where('status', self::STATUS_PENDING)
+            ->whereNull('submitted_at')
+            ->whereNotNull('deadline_at')
+            ->where('deadline_at', '<=', now())
+            ->update([
+                'status'           => self::STATUS_AUTO_FAILED,
+                'rejection_reason' => 'Melewati batas waktu upload bukti presensi (maksimal 1 jam setelah kelas selesai).',
+            ]);
+    }
+
+    /**
+     * Deadline SOP: satu jam setelah kelas selesai.
+     */
+    protected static function deadlineFor(string $sessionDate, ?string $endTime): Carbon
+    {
+        return Carbon::parse($sessionDate . ' ' . ($endTime ?: '23:59:59'))->addHour();
     }
 
     // ── Status Constants ──────────────────────────────────────────────────────
@@ -115,13 +157,46 @@ class AttendanceVerification extends Model
     public function isAutoFailed(): bool { return $this->status === self::STATUS_AUTO_FAILED; }
 
     /**
-     * Cek apakah coach masih dalam window waktu untuk resubmit
+     * Hitung deadline_at jika belum terisi di database
      */
+    public function getEffectiveDeadlineAttribute(): ?Carbon
+    {
+        if ($this->deadline_at) {
+            return $this->deadline_at;
+        }
+
+        if ($this->session_date && $this->schedule) {
+            $endTimeStr = $this->schedule->end_time ?? '23:59:59';
+            return Carbon::parse($this->session_date->format('Y-m-d') . ' ' . $endTimeStr)->addHour();
+        }
+
+        return null;
+    }
+
+    /**
+     * Cek apakah sudah melewati batas waktu 1 jam setelah kelas selesai
+     */
+    public function isPastDeadline(): bool
+    {
+        $deadline = $this->effective_deadline;
+        return $deadline ? now()->gte($deadline) : false;
+    }
+
+    /**
+     * Cek apakah coach masih dalam window waktu untuk resubmit atau submit
+     */
+    public function canSubmit(): bool
+    {
+        if ($this->isAutoFailed() || $this->isApproved()) {
+            return false;
+        }
+
+        return !$this->isPastDeadline();
+    }
+
     public function canResubmit(): bool
     {
-        return $this->status === self::STATUS_REJECTED
-            && $this->deadline_at
-            && now()->lt($this->deadline_at);
+        return $this->status === self::STATUS_REJECTED && $this->canSubmit();
     }
 
     // ── Scopes ────────────────────────────────────────────────────────────────

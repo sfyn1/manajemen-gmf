@@ -10,6 +10,7 @@ class ClassHistoryController extends Controller
     public function index()
     {
         $member = auth()->user()->member;
+        ClassBooking::markCompletedSessions();
 
         $bookings = $member->bookings()
             ->with(['schedule.classType', 'schedule.coach'])

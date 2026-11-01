@@ -19,6 +19,7 @@ class DashboardController extends Controller
         }
 
         $member->load(['package']);
+        ClassBooking::markCompletedSessions();
 
         // QR Code generate
         $qrCode = null;

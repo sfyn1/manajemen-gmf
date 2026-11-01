@@ -31,6 +31,7 @@ class AttendanceVerificationController extends Controller
             $item->bookings = ClassBooking::where('class_schedule_id', $item->class_schedule_id)
                 ->where('booking_date', $item->session_date->format('Y-m-d'))
                 ->whereIn('status', [ClassBooking::STATUS_BOOKED, ClassBooking::STATUS_ATTENDED])
+                ->where('payment_status', 'settlement')
                 ->with('member')
                 ->get();
         });
@@ -46,6 +47,7 @@ class AttendanceVerificationController extends Controller
             $item->bookings = ClassBooking::where('class_schedule_id', $item->class_schedule_id)
                 ->where('booking_date', $item->session_date->format('Y-m-d'))
                 ->whereIn('status', [ClassBooking::STATUS_BOOKED, ClassBooking::STATUS_ATTENDED])
+                ->where('payment_status', 'settlement')
                 ->with('member')
                 ->get();
         });
@@ -64,10 +66,27 @@ class AttendanceVerificationController extends Controller
     {
         abort_unless($verification->coach_id === Coach::where('user_id', auth()->id())->value('id'), 403);
 
+        // Status ditolak dapat diunggah ulang selama belum melewati deadline SOP.
+        abort_unless(in_array($verification->status, [AttendanceVerification::STATUS_PENDING, AttendanceVerification::STATUS_REJECTED], true), 403);
+
+        // Validasi SOP: Upload bukti maksimal 1 jam setelah kelas selesai
+        if ($verification->isPastDeadline()) {
+            $verification->update([
+                'status'           => AttendanceVerification::STATUS_AUTO_FAILED,
+                'rejection_reason' => 'Batas waktu verifikasi kehadiran telah berakhir (Maksimal 1 jam setelah kelas selesai). Status otomatis dibatalkan.',
+            ]);
+
+            return redirect()->route('coach.attendance.index')->with('error', 'Gagal: Batas waktu unggah bukti telah berakhir (Maksimal 1 jam setelah kelas selesai). Presensi sesi ini otomatis gagal.');
+        }
+
         $request->validate([
-            'photo_proof' => ['required', 'file', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'photo_proof' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
             'notes'       => ['nullable', 'string', 'max:500'],
         ]);
+
+        // Camera capture dikirim sebagai JPEG/PNG; dokumen dan format non-image ditolak.
+        $imageInfo = @getimagesize($request->file('photo_proof')->getRealPath());
+        abort_unless($imageInfo !== false, 422, 'Bukti harus berupa gambar kamera yang valid.');
 
         if ($verification->photo_path) {
             Storage::disk('public')->delete($verification->photo_path);
@@ -82,7 +101,7 @@ class AttendanceVerificationController extends Controller
             'coach_notes'  => $request->notes,
         ]);
 
-        return redirect()->route('coach.attendance.index')->with('success', 'Verifikasi kehadiran berhasil disubmit. Menunggu review admin.');
+        return redirect()->route('coach.attendance.index')->with('success', 'Verifikasi kehadiran berhasil disubmit tepat waktu. Menunggu review admin.');
     }
 
     public function resubmit(AttendanceVerification $verification, Request $request)
